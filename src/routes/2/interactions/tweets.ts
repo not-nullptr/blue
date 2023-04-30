@@ -1,0 +1,917 @@
+import express from "express";
+import User from "../../../models/User";
+import {
+	AdvertiserAccountType,
+	EXTProfileImageShape,
+	IUser,
+	Resize,
+	State,
+	Status,
+	Type,
+} from "../../../types/guide";
+
+import { Timeline } from "../../../types/guideClass";
+
+const router = express.Router();
+
+router.get("/guide.json", (req, res) => {
+	const { ...response } = new Timeline({});
+	return res.status(200).send({
+		globalObjects: {
+			tweets: {
+				"1652077563651698689": {
+					created_at: "Fri Apr 28 22:29:19 +0000 2023",
+					id: 1652077563651698689,
+					id_str: "1652077563651698689",
+					full_text: "On @billmaher show tonight",
+					truncated: false,
+					display_text_range: [0, 26],
+					entities: {
+						hashtags: [],
+						symbols: [],
+						user_mentions: [
+							{
+								screen_name: "billmaher",
+								name: "Bill Maher",
+								id: 19697415,
+								id_str: "19697415",
+								indices: [3, 13],
+							},
+						],
+						urls: [],
+					},
+					source:
+						'\u003ca href="http://twitter.com/download/iphone" rel="nofollow"\u003eTwitter for iPhone\u003c/a\u003e',
+					in_reply_to_status_id: null,
+					in_reply_to_status_id_str: null,
+					in_reply_to_user_id: null,
+					in_reply_to_user_id_str: null,
+					in_reply_to_screen_name: null,
+					user_id: 44196397,
+					user_id_str: "44196397",
+					geo: null,
+					coordinates: null,
+					place: null,
+					contributors: null,
+					is_quote_status: false,
+					retweet_count: 5860,
+					favorite_count: 84421,
+					reply_count: 5065,
+					quote_count: 0,
+					conversation_id: 1652077563651698689,
+					conversation_id_str: "1652077563651698689",
+					favorited: false,
+					retweeted: false,
+					lang: "en",
+					supplemental_language: null,
+					ext_views: {
+						state: "EnabledWithCount",
+						count: "9895293",
+					},
+					ext: {
+						editControl: {
+							r: {
+								ok: {
+									initial: {
+										editTweetIds: ["1652077563651698689"],
+										editableUntilMsecs: "1682722759000",
+										editsRemaining: "5",
+										isEditEligible: true,
+									},
+								},
+							},
+							ttl: -1,
+						},
+						unmentionInfo: {
+							r: {
+								ok: {},
+							},
+							ttl: -1,
+						},
+					},
+				},
+			},
+			users: {
+				"44196397": {
+					id: 44196397,
+					id_str: "44196397",
+					name: "Elon Musk",
+					screen_name: "elonmusk",
+					location: "Tr\u00f8llheim",
+					description: "nothing",
+					url: null,
+					entities: {
+						description: {
+							urls: [],
+						},
+					},
+					protected: false,
+					followers_count: 137293601,
+					fast_followers_count: 0,
+					normal_followers_count: 137293601,
+					friends_count: 249,
+					listed_count: 121127,
+					created_at: "Tue Jun 02 20:12:29 +0000 2009",
+					favourites_count: 22163,
+					utc_offset: null,
+					time_zone: null,
+					geo_enabled: false,
+					verified: false,
+					statuses_count: 25241,
+					media_count: 1520,
+					lang: null,
+					contributors_enabled: false,
+					is_translator: false,
+					is_translation_enabled: false,
+					profile_background_color: "C0DEED",
+					profile_background_image_url:
+						"http://abs.twimg.com/images/themes/theme1/bg.png",
+					profile_background_image_url_https:
+						"https://abs.twimg.com/images/themes/theme1/bg.png",
+					profile_background_tile: false,
+					profile_image_url:
+						"http://pbs.twimg.com/profile_images/1590968738358079488/IY9Gx6Ok_normal.jpg",
+					profile_image_url_https:
+						"https://pbs.twimg.com/profile_images/1590968738358079488/IY9Gx6Ok_normal.jpg",
+					profile_banner_url:
+						"https://pbs.twimg.com/profile_banners/44196397/1576183471",
+					profile_link_color: "0084B4",
+					profile_sidebar_border_color: "C0DEED",
+					profile_sidebar_fill_color: "DDEEF6",
+					profile_text_color: "333333",
+					profile_use_background_image: true,
+					has_extended_profile: true,
+					default_profile: false,
+					default_profile_image: false,
+					pinned_tweet_ids: [],
+					pinned_tweet_ids_str: [],
+					has_custom_timelines: true,
+					can_dm: null,
+					following: null,
+					follow_request_sent: null,
+					notifications: null,
+					muting: null,
+					blocking: null,
+					blocked_by: null,
+					want_retweets: null,
+					advertiser_account_type: "none",
+					advertiser_account_service_levels: [],
+					business_profile_state: "none",
+					translator_type: "none",
+					withheld_in_countries: [],
+					followed_by: null,
+					ext_has_nft_avatar: false,
+					ext_profile_image_shape: "Circle",
+					ext_is_blue_verified: true,
+					ext: {
+						hasNftAvatar: {
+							r: {
+								ok: false,
+							},
+							ttl: -1,
+						},
+						highlightedLabel: {
+							r: {
+								ok: {
+									label: {
+										description: "Twitter",
+										badge: {
+											url: "https://pbs.twimg.com/profile_images/1488548719062654976/u6qfBBkF_bigger.jpg",
+										},
+										url: {
+											urlType: "DeepLink",
+											url: "https://twitter.com/Twitter",
+										},
+										userLabelType: "BusinessLabel",
+										userLabelDisplayType: "Badge",
+									},
+								},
+							},
+							ttl: -1,
+						},
+					},
+					require_some_consent: false,
+				},
+			},
+			moments: {},
+			cards: {},
+			places: {},
+			media: {},
+			broadcasts: {},
+			topics: {},
+			lists: {},
+		},
+		timeline: {
+			id: "guide-events_tab-page-283-1652275109299355648",
+			instructions: [
+				{
+					clearCache: {},
+				},
+				{
+					addEntries: {
+						entries: [
+							{
+								entryId: "cursor:1000000000",
+								sortIndex: "1000000000",
+								content: {
+									operation: {
+										cursor: {
+											value:
+												"CwABAAAALWd1aWRlLWV2ZW50c190YWItcGFnZS0yODMtMTY1MjI3NTEwOTI5OTM1NTY0OAgAAwAAAAAIAAIAAAABCAAEO5rKAAA=",
+											cursorType: "Top",
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652051725740650501",
+								sortIndex: "999999999",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652051725740650501",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "content_recommender_explore_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652098207130820611",
+								sortIndex: "999999998",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652098207130820611",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652214615676444672",
+								sortIndex: "999999997",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652214615676444672",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652011978292969472",
+								sortIndex: "999999996",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652011978292969472",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652041043519348745",
+								sortIndex: "999999995",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652041043519348745",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652048376882405377",
+								sortIndex: "999999994",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652048376882405377",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652081118802329600",
+								sortIndex: "999999993",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652081118802329600",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652077855977897985",
+								sortIndex: "999999992",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652077855977897985",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652266888670355457",
+								sortIndex: "999999991",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652266888670355457",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652117745687752716",
+								sortIndex: "999999990",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652117745687752716",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652254769518465024",
+								sortIndex: "999999989",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652254769518465024",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652080087926288384",
+								sortIndex: "999999988",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652080087926288384",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652077563651698689",
+								sortIndex: "999999987",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652077563651698689",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652087469167493120",
+								sortIndex: "999999986",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652087469167493120",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "content_recommender_explore_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652000709813080065",
+								sortIndex: "999999985",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652000709813080065",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652098204232732672",
+								sortIndex: "999999984",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652098204232732672",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1651972286738575364",
+								sortIndex: "999999983",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1651972286738575364",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1651969705735868416",
+								sortIndex: "999999982",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1651969705735868416",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "content_recommender_explore_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652040280609288193",
+								sortIndex: "999999981",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652040280609288193",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "tweet-1652035403908521986",
+								sortIndex: "999999980",
+								content: {
+									item: {
+										content: {
+											tweet: {
+												id: "1652035403908521986",
+												displayType: "Tweet",
+											},
+										},
+										clientEventInfo: {
+											component: "trip_geo_domain_tweets",
+											element: "tweet",
+											details: {
+												timelinesDetails: {
+													controllerData: "DAACDAAODAABCgABgjvWN0kn/gIAAAAA",
+												},
+											},
+										},
+									},
+								},
+							},
+							{
+								entryId: "cursor:999999979",
+								sortIndex: "999999979",
+								content: {
+									operation: {
+										cursor: {
+											value:
+												"CwABAAAALWd1aWRlLWV2ZW50c190YWItcGFnZS0yODMtMTY1MjI3NTEwOTI5OTM1NTY0OAgAAwAAABQIAAIAAAACCAAEO5rJ6wA=",
+											cursorType: "Bottom",
+										},
+									},
+								},
+							},
+						],
+					},
+				},
+			],
+			responseObjects: {
+				feedbackActions: {
+					trend_irrelevant_content_feedback_key: {
+						feedbackType: "SeeFewer",
+						prompt: "The associated content is not relevant",
+						confirmation: "Thanks. Refresh this page to update these trends.",
+						feedbackUrl:
+							"/2/guide/insert_feedback/trend_irrelevant_content_feedback_key.json",
+						hasUndoAction: false,
+						confirmationDisplayType: "BottomSheet",
+					},
+					spotlight_dismiss_feedback_key: {
+						feedbackType: "Dismiss",
+						prompt: "Don't want to see this ad",
+						confirmation: "Thanks. Refresh this page to update these trends.",
+						hasUndoAction: false,
+						confirmationDisplayType: "BottomSheet",
+					},
+					trend_abusive_feedback_key: {
+						feedbackType: "SeeFewer",
+						prompt: "This trend is abusive or harmful",
+						confirmation: "Thanks. Refresh this page to update these trends.",
+						feedbackUrl:
+							"/2/guide/insert_feedback/trend_abusive_feedback_key.json",
+						hasUndoAction: false,
+						confirmationDisplayType: "Inline",
+					},
+					guide_not_interested_feedback_key: {
+						feedbackType: "SeeFewer",
+						prompt: "Hide",
+						confirmation: "Thank you, we will show you less of this",
+						feedbackUrl: "/2/guide/dont_like_this/feedback.json",
+						hasUndoAction: true,
+						confirmationDisplayType: "Inline",
+						icon: "NO",
+					},
+					guide_see_more_feedback_key: {
+						feedbackType: "SeeMore",
+						prompt: "Show more often",
+						confirmation: "Thank you, we will show you more of this",
+						feedbackUrl: "/2/guide/show_more/feedback.json",
+						hasUndoAction: true,
+						confirmationDisplayType: "BottomSheet",
+					},
+					trend_spam_feedback_key: {
+						feedbackType: "SeeFewer",
+						prompt: "This trend is spam",
+						confirmation: "Thanks. Refresh this page to update these trends.",
+						feedbackUrl:
+							"/2/guide/insert_feedback/trend_spam_feedback_key.json",
+						hasUndoAction: false,
+						confirmationDisplayType: "Inline",
+					},
+					trend_low_quality_feedback_key: {
+						feedbackType: "SeeFewer",
+						prompt: "This trend is low quality",
+						confirmation: "Thanks. Refresh this page to update these trends.",
+						feedbackUrl:
+							"/2/guide/insert_feedback/trend_low_quality_feedback_key.json",
+						hasUndoAction: false,
+						confirmationDisplayType: "Inline",
+					},
+					guide_see_less_feedback_key: {
+						feedbackType: "SeeFewer",
+						prompt: "Show less often",
+						confirmation: "Thank you, we will show you less of this",
+						feedbackUrl: "/2/guide/dont_like_this/feedback.json",
+						hasUndoAction: true,
+						confirmationDisplayType: "Inline",
+					},
+					trend_not_interested_in_this_feedback_key: {
+						feedbackType: "SeeFewer",
+						prompt: "Not interested in this",
+						confirmation: "Thanks. Refresh this page to update these trends.",
+						feedbackUrl:
+							"/2/guide/insert_feedback/trend_not_interested_in_this_feedback_key.json",
+						hasUndoAction: false,
+						confirmationDisplayType: "Inline",
+					},
+					trend_abusive_or_harmful_feedback_key: {
+						feedbackType: "SeeFewer",
+						prompt: "This trend is harmful or spammy",
+						confirmation: "Thanks. Refresh this page to update these trends.",
+						feedbackUrl:
+							"/2/guide/insert_feedback/trend_abusive_or_harmful_feedback_key.json",
+						hasUndoAction: false,
+						confirmationDisplayType: "BottomSheet",
+					},
+					guide_hide_topic_key: {
+						feedbackType: "SeeFewer",
+						prompt: "Unfollow topic",
+						confirmation: "Thank you, we will show you less of this",
+						feedbackUrl: "/2/guide/feedback/hide_topic.json",
+						hasUndoAction: true,
+						confirmationDisplayType: "Inline",
+						icon: "TOPIC_CLOSE",
+					},
+					trend_duplicate_feedback_key: {
+						feedbackType: "SeeFewer",
+						prompt: "This trend is a duplicate",
+						confirmation: "Thanks. Refresh this page to update these trends.",
+						feedbackUrl:
+							"/2/guide/insert_feedback/trend_duplicate_feedback_key.json",
+						hasUndoAction: false,
+						confirmationDisplayType: "Inline",
+					},
+				},
+			},
+		},
+	});
+});
+
+export default router;
+
+/*
+{
+  "id": 287333780,
+  "id_str": "287333780",
+  "name": "real user",
+  "screen_name": "elonmusk",
+  "location": "NYC",
+  "description": "\"You Will Find Your People\" out now!!📚✨Author of \"How To Be Alone\"📘The Onion. Tinder Live. \"I Thought It Was Just Me\" podcast. Musician @itwasromance",
+  "url": "https://t.co/qDSfAc207A",
+  "entities": {
+    "url": {
+      "urls": [
+        {
+          "url": "https://t.co/qDSfAc207A",
+          "expanded_url": "https://linktr.ee/hellolanemoore",
+          "display_url": "linktr.ee/hellolanemoore",
+          "indices": [
+            0,
+            23
+          ]
+        }
+      ]
+    },
+    "description": {
+      "urls": []
+    }
+  },
+  "protected": false,
+  "followers_count": 73061,
+  "fast_followers_count": 0,
+  "normal_followers_count": 73061,
+  "friends_count": 6586,
+  "listed_count": 652,
+  "created_at": "Sun Apr 24 19:51:11 +0000 2011",
+  "favourites_count": 48013,
+  "utc_offset": null,
+  "time_zone": null,
+  "geo_enabled": true,
+  "verified": false,
+  "statuses_count": 5092,
+  "media_count": 941,
+  "lang": null,
+  "contributors_enabled": false,
+  "is_translator": false,
+  "is_translation_enabled": false,
+  "profile_background_color": "131516",
+  "profile_background_image_url": "http://abs.twimg.com/images/themes/theme14/bg.gif",
+  "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme14/bg.gif",
+  "profile_background_tile": true,
+  "profile_image_url": "",
+  "profile_image_url_https": "",
+  "profile_banner_url": "https://pbs.twimg.com/profile_banners/287333780/1670952217",
+  "profile_link_color": "0AADAD",
+  "profile_sidebar_border_color": "FFFFFF",
+  "profile_sidebar_fill_color": "EFEFEF",
+  "profile_text_color": "333333",
+  "profile_use_background_image": true,
+  "has_extended_profile": true,
+  "default_profile": false,
+  "default_profile_image": true,
+  "pinned_tweet_ids": [
+    1597245073057775600
+  ],
+  "pinned_tweet_ids_str": [
+    "1597245073057775616"
+  ],
+  "has_custom_timelines": false,
+  "can_dm": null,
+  "following": null,
+  "follow_request_sent": null,
+  "notifications": null,
+  "muting": null,
+  "blocking": null,
+  "blocked_by": null,
+  "want_retweets": null,
+  "advertiser_account_type": "none",
+  "advertiser_account_service_levels": [],
+  "business_profile_state": "none",
+  "translator_type": "none",
+  "withheld_in_countries": [],
+  "followed_by": null,
+  "ext_is_blue_verified": false,
+  "ext_profile_image_shape": "Circle",
+  "ext_has_nft_avatar": false,
+  "ext": {
+    "highlightedLabel": {
+      "r": {
+        "ok": {}
+      },
+      "ttl": -1
+    },
+    "hasNftAvatar": {
+      "r": {
+        "ok": false
+      },
+      "ttl": -1
+    }
+  },
+  "require_some_consent": false
+}
+*/
