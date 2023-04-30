@@ -21,6 +21,7 @@ interface FlowTokenInfo {
 	username?: string;
 	email?: string;
 	password?: string;
+	id?: number;
 	type?: "signup" | "login";
 }
 
@@ -1308,17 +1309,17 @@ router.post("/onboarding/task.json", async (req, res) => {
 			case "LoginJsInstrumentationSubtask": {
 				if (subtask.enter_password) {
 					const token = flowTokens.find((t) => t.token === body.flow_token);
-					if (!token) return res.status(400).send();
+					if (!token || !token.id) return res.status(400).send();
 					token.password = subtask.enter_password.password;
-					const id = randInt(24);
+					console.log(token.id);
 					const user = new User({
-						id,
-						id_str: id.toString(),
+						id: token.id,
+						id_string: token.id.toString(),
 						name: token.name,
 						email: token.email,
 						screen_name: token.username,
 						password: token.password,
-						location: null,
+						location: "",
 						description: null,
 						url: null,
 						entities: {
@@ -1646,13 +1647,18 @@ router.post("/onboarding/task.json", async (req, res) => {
 			}
 			case "Signup": {
 				const username = randInt(12);
+				const id = randInt(16);
 				flowTokens.push({
 					token: body.flow_token,
 					email: subtask.sign_up.email,
 					name: subtask.sign_up.name,
+					id: id,
 					username: username.toString(),
 					type: "signup",
 				});
+				console.log(
+					flowTokens.find((token) => (token.token = body.flow_token))
+				);
 				response.subtasks.push({
 					enter_password: {
 						email: subtask.sign_up.email,
@@ -1697,6 +1703,7 @@ router.post("/onboarding/task.json", async (req, res) => {
 				if (!user) return res.status(400).send();
 				if (flow.password === user.password) {
 					// res.cookie("twid", `u=${user.id}`);
+					flow.id = user.id;
 					response.subtasks.push({
 						check_logged_in_account: {
 							false_link: {
@@ -1725,7 +1732,7 @@ router.post("/onboarding/task.json", async (req, res) => {
 				if (!user) return res.status(400).send();
 				res.setHeader(
 					"set-cookie",
-					`twid="u=${user.id}"; Max-Age=34214400; Path=/; Domain=.twitter.com; Secure; SameSite=None`
+					`twid="u=${flow.id}"; Max-Age=34214400; Path=/; Domain=.twitter.com; Secure; SameSite=None`
 				);
 				response.subtasks.push(
 					{

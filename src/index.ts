@@ -8,6 +8,7 @@ import https from "https";
 import cors from "cors";
 import mongoose from "mongoose";
 import * as mockttp from "mockttp";
+import cookieParser = require("cookie-parser");
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ const app = express();
 mongoose.connect("mongodb://127.0.0.1:27017/blue");
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(
 	cors({
 		credentials: true,

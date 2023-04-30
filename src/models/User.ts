@@ -4,8 +4,18 @@ const user = new mongoose.Schema({
 	name: {
 		type: "String",
 	},
-	email: String,
-	password: String,
+	id: {
+		type: "Number",
+	},
+	id_string: {
+		type: "String",
+	},
+	email: {
+		type: "String",
+	},
+	password: {
+		type: "String",
+	},
 	screen_name: {
 		type: "String",
 	},
