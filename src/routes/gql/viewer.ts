@@ -7,7 +7,7 @@ router.use("/XeaGEEWXp54Km4mVNvcMmg/Viewer", async (req, res) => {
 	if (!req.cookies.twid)
 		return res.status(400).send({ msg: "No twid detected" });
 	const id = (req.cookies.twid as string).split("=")[1] as string;
-	if (!id)
+	if (!id || id === "undefined")
 		return res.status(400).send({ msg: "Error occured extracting twid" });
 	const user = await User.findOne({
 		id,

@@ -1700,11 +1700,9 @@ router.post("/onboarding/task.json", async (req, res) => {
 					? await User.findOne({ email: flow.email }).select("+password")
 					: await User.findOne({ name: flow.name }).select("+password");
 				if (!user) return res.status(400).send();
-				const authenticated = await (async () => {
-					return new Promise<boolean>((resolve) => {
-						compare(flow.password!, user.password!).then((r) => resolve(r));
-					});
-				})();
+				const authenticated = await (async () =>
+					await compare(flow.password!, user.password!))();
+				console.log(authenticated);
 				if (authenticated) {
 					// res.cookie("twid", `u=${user.id}`);
 					flow.id = user.id;
@@ -1722,6 +1720,10 @@ router.post("/onboarding/task.json", async (req, res) => {
 						},
 						subtask_id: "AccountDuplicationCheck",
 					});
+				} else {
+					return res
+						.status(400)
+						.send({ errors: [{ code: 399, message: "Wrong password!" }] });
 				}
 			}
 			case "AccountDuplicationCheck": {
