@@ -5,7 +5,7 @@ import {
 	EXTProfileImageShape,
 	IUser,
 } from "../../../types/guide";
-
+import { hash, compare } from "bcrypt";
 import { Timeline } from "../../../types/guideClass";
 import { Task, TaskRes } from "../../../types/task";
 import { formatDate } from "../../../util/formatDate";
@@ -1310,8 +1310,7 @@ router.post("/onboarding/task.json", async (req, res) => {
 				if (subtask.enter_password) {
 					const token = flowTokens.find((t) => t.token === body.flow_token);
 					if (!token || !token.id) return res.status(400).send();
-					token.password = subtask.enter_password.password;
-					console.log(token.id);
+					token.password = await hash(subtask.enter_password.password, 10);
 					const user = new User({
 						id: token.id,
 						id_string: token.id.toString(),
@@ -1701,7 +1700,12 @@ router.post("/onboarding/task.json", async (req, res) => {
 					? await User.findOne({ email: flow.email }).select("+password")
 					: await User.findOne({ name: flow.name }).select("+password");
 				if (!user) return res.status(400).send();
-				if (flow.password === user.password) {
+				const authenticated = await (async () => {
+					return new Promise<boolean>((resolve) => {
+						compare(flow.password!, user.password!).then((r) => resolve(r));
+					});
+				})();
+				if (authenticated) {
 					// res.cookie("twid", `u=${user.id}`);
 					flow.id = user.id;
 					response.subtasks.push({
