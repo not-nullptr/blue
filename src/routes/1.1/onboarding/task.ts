@@ -21,6 +21,7 @@ interface FlowTokenInfo {
 	username?: string;
 	email?: string;
 	password?: string;
+	type?: "signup" | "login";
 }
 
 const flowTokens = [] as FlowTokenInfo[];
@@ -32,8 +33,13 @@ router.post("/onboarding/task.json", async (req, res) => {
 	if (!body.subtask_inputs) {
 		switch ((req.query as unknown as Params).flow_name) {
 			case "login": {
+				const token = `g;${randInt(18)}:-${randInt(13)}:${randStr(24)}:0`;
+				flowTokens.push({
+					type: "login",
+					token,
+				});
 				return res.status(200).send({
-					flow_token: body.flow_token,
+					flow_token: token,
 					status: "success",
 					subtasks: [
 						{
@@ -1296,6 +1302,7 @@ router.post("/onboarding/task.json", async (req, res) => {
 		subtasks: [],
 	} as TaskRes;
 	for (const subtask of body.subtask_inputs) {
+		console.log(subtask.subtask_id);
 		let subtaskResponse = { flow_token: body.flow_token, status: "success" };
 		switch (subtask.subtask_id) {
 			case "LoginJsInstrumentationSubtask": {
@@ -1550,6 +1557,8 @@ router.post("/onboarding/task.json", async (req, res) => {
 				break;
 			}
 			case "LoginEnterUserIdentifierSSO": {
+				const flow = flowTokens.find((t) => t.token === body.flow_token);
+				if (!flow) return res.status(400).send();
 				const username =
 					body.subtask_inputs[0].settings_list!.setting_responses[0]
 						.response_data.text_data.result;
@@ -1557,12 +1566,14 @@ router.post("/onboarding/task.json", async (req, res) => {
 				const userEmail = await User.findOne({
 					email: username,
 				});
+
 				if (!userEmail && !userScreenName)
 					return res.status(400).send({
 						errors: [
 							{ code: 399, message: "Sorry, we could not find your account." },
 						],
 					});
+				userScreenName ? (flow.name = username) : (flow.email = username);
 				response.subtasks.push(
 					{
 						enter_password: {
@@ -1640,6 +1651,7 @@ router.post("/onboarding/task.json", async (req, res) => {
 					email: subtask.sign_up.email,
 					name: subtask.sign_up.name,
 					username: username.toString(),
+					type: "signup",
 				});
 				response.subtasks.push({
 					enter_password: {
@@ -1672,22 +1684,95 @@ router.post("/onboarding/task.json", async (req, res) => {
 				break;
 			}
 
-			case "EnterPassword": {
+			case "LoginEnterPassword": {
 				const flow = flowTokens.find((f) => f.token === body.flow_token);
 				if (!flow)
 					return res
 						.status(400)
 						.send({ success: false, err: "Invalid flow token" });
 				flow.password = body.subtask_inputs[0].enter_password.password;
-				console.log(flow.password);
+				const user = flow.email
+					? await User.findOne({ email: flow.email }).select("+password")
+					: await User.findOne({ name: flow.name }).select("+password");
+				if (!user) return res.status(400).send();
+				if (flow.password === user.password) {
+					// res.cookie("twid", `u=${user.id}`);
+					response.subtasks.push({
+						check_logged_in_account: {
+							false_link: {
+								link_id: "AccountDuplicationCheck_false",
+								link_type: "task",
+							},
+							true_link: {
+								link_id: "AccountDuplicationCheck_true",
+								link_type: "task",
+							},
+							user_id: "1483042300943122432",
+						},
+						subtask_id: "AccountDuplicationCheck",
+					});
+				}
 			}
-
+			case "AccountDuplicationCheck": {
+				const flow = flowTokens.find((f) => f.token === body.flow_token);
+				if (!flow)
+					return res
+						.status(400)
+						.send({ success: false, err: "Invalid flow token" });
+				const user = flow.email
+					? await User.findOne({ email: flow.email }).select("+password")
+					: await User.findOne({ name: flow.name }).select("+password");
+				if (!user) return res.status(400).send();
+				res.setHeader(
+					"set-cookie",
+					`twid="u=${user.id}"; Max-Age=34214400; Path=/; Domain=.twitter.com; Secure; SameSite=None`
+				);
+				response.subtasks.push(
+					{
+						open_account: {
+							attribution_event: "login",
+							next_link: {
+								link_id: "next_link",
+								link_type: "subtask",
+								subtask_id: "SuccessExit",
+							},
+							user: {
+								id: user.id,
+								id_str: user.id.toString(),
+								name: user.name,
+								screen_name: user.screen_name,
+							},
+						},
+						subtask_id: "LoginSuccessSubtask",
+					},
+					{
+						open_link: {
+							link: {
+								link_id: "next_link",
+								link_type: "subtask",
+								subtask_id: "LoginOpenHomeTimeline",
+							},
+						},
+						subtask_id: "SuccessExit",
+					},
+					{
+						open_home_timeline: {
+							next_link: {
+								link_id: "next_link",
+								link_type: "abort",
+							},
+						},
+						subtask_id: "LoginOpenHomeTimeline",
+					}
+				);
+			}
 			default: {
 				Object.assign(subtaskResponse, {
 					flow_token: body.flow_token,
 					status: "success",
 					subtasks: [
 						{
+							message: "Blue OSS has yet to implement this subtask. Sorry.",
 							js_instrumentation: {
 								timeout_ms: 2000,
 								url: "https://twitter.com/i/js_inst?c_name=ui_metrics",

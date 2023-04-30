@@ -28,6 +28,7 @@ app.use(
 
 const routes11 = searchDirForTsFiles("src/routes/1.1");
 const routes2 = searchDirForTsFiles("src/routes/2");
+const routesGraphQL = searchDirForTsFiles("src/routes/gql");
 const routesOther = searchDirForTsFiles("src/routes/other");
 
 routes11.forEach(async (routePath) => {
@@ -40,6 +41,12 @@ routes2.forEach(async (routePath) => {
 	const router = ((await import(routePath.replace("src/", "./"))) as IRouteFile)
 		.default;
 	app.use("/i/api/2", router);
+});
+
+routesGraphQL.forEach(async (routePath) => {
+	const router = ((await import(routePath.replace("src/", "./"))) as IRouteFile)
+		.default;
+	app.use("/i/api/graphql", router);
 });
 
 routesOther.forEach(async (routePath) => {

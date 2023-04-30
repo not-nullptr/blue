@@ -13,10 +13,11 @@ export interface SubtaskInput {
 		| "ArkoseEmail"
 		| "SignupSettingsListEmail"
 		| "Signup"
-		| "EnterPassword"
+		| "LoginEnterPassword"
 		| "SelectAvatar"
 		| "UsernameEntryBio"
-		| "NotificationsPermissionPrompt";
+		| "NotificationsPermissionPrompt"
+		| "AccountDuplicationCheck";
 	settings_list?: SettingsList;
 	[key: string]: any; // dynamic(tm)
 }
