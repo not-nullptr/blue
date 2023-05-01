@@ -72,7 +72,7 @@ router.use("/XeaGEEWXp54Km4mVNvcMmg/Viewer", async (req, res) => {
 						__typename: "User",
 						affiliates_highlighted_label: {},
 						has_graduated_access: true,
-						id: user.id,
+						id: user._id,
 						is_blue_verified: false,
 						is_profile_translatable: false,
 						// legacy: {

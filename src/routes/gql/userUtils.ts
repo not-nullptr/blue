@@ -40,7 +40,29 @@ router.get("/sLVLhk0bGj3MVFEKTdax1w/UserByScreenName", async (req, res) => {
 	return res.status(200).send({
 		data: {
 			user: {
-				result: (user as any)._doc,
+				result: {
+					__typename: "User",
+					id: user._id,
+					rest_id: user.id,
+					affiliates_highlighted_label: {
+						label: {
+							url: {
+								url: "https://twitter.com/Twitter",
+								urlType: "DeepLink",
+							},
+							badge: {
+								url: "https://pbs.twimg.com/profile_images/1488548719062654976/u6qfBBkF_bigger.jpg",
+							},
+							description: "Twitter",
+							userLabelType: "BusinessLabel",
+							userLabelDisplayType: "Badge",
+						},
+					},
+					is_blue_verified: true,
+					profile_image_shape: "Circle",
+					legacy: user,
+					business_account: {},
+				},
 			},
 		},
 	});
@@ -65,7 +87,29 @@ router.get("/GazOglcBvgLigl3ywt6b3Q/UserByRestId", async (req, res) => {
 	return res.status(200).send({
 		data: {
 			user: {
-				result: (user as any)._doc,
+				result: {
+					__typename: "User",
+					id: user._id,
+					rest_id: user.id,
+					affiliates_highlighted_label: {
+						label: {
+							url: {
+								url: "https://twitter.com/Twitter",
+								urlType: "DeepLink",
+							},
+							badge: {
+								url: "https://pbs.twimg.com/profile_images/1488548719062654976/u6qfBBkF_bigger.jpg",
+							},
+							description: "Twitter",
+							userLabelType: "BusinessLabel",
+							userLabelDisplayType: "Badge",
+						},
+					},
+					is_blue_verified: true,
+					profile_image_shape: "Circle",
+					legacy: user,
+					business_account: {},
+				},
 			},
 		},
 	});
