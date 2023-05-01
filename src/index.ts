@@ -28,33 +28,42 @@ app.use(
 	})
 );
 
+async function mountRoute(routePath: string, root: string) {
+	// console.log(`Mounted ${routePath.replace("src/", "")}!`);
+	const router = ((await import(routePath.replace("src/", "./"))) as IRouteFile)
+		.default;
+	app.use(root, router);
+}
+
 const routes11 = searchDirForTsFiles("src/routes/1.1");
+const routes11Prefixed = searchDirForTsFiles("src/routes/1.1-prefixed");
 const routes2 = searchDirForTsFiles("src/routes/2");
 const routesGraphQL = searchDirForTsFiles("src/routes/gql");
 const routesOther = searchDirForTsFiles("src/routes/other");
+const twimg = searchDirForTsFiles("src/routes/twimg");
 
 routes11.forEach(async (routePath) => {
-	const router = ((await import(routePath.replace("src/", "./"))) as IRouteFile)
-		.default;
-	app.use("/1.1", router);
+	await mountRoute(routePath, "/1.1");
+});
+
+routes11Prefixed.forEach(async (routePath) => {
+	await mountRoute(routePath, "/i/api/1.1");
 });
 
 routes2.forEach(async (routePath) => {
-	const router = ((await import(routePath.replace("src/", "./"))) as IRouteFile)
-		.default;
-	app.use("/i/api/2", router);
+	await mountRoute(routePath, "/i/api/2");
 });
 
 routesGraphQL.forEach(async (routePath) => {
-	const router = ((await import(routePath.replace("src/", "./"))) as IRouteFile)
-		.default;
-	app.use("/i/api/graphql", router);
+	await mountRoute(routePath, "/i/api/graphql");
 });
 
 routesOther.forEach(async (routePath) => {
-	const router = ((await import(routePath.replace("src/", "./"))) as IRouteFile)
-		.default;
-	app.use(router);
+	await mountRoute(routePath, "/");
+});
+
+twimg.forEach(async (routePath) => {
+	await mountRoute(routePath, "/");
 });
 
 // app.use((req, res, next) => {
@@ -95,8 +104,16 @@ httpsServer.listen(process.env.PORT, () => {
 		.forAnyRequest()
 		.forHostname("api.twitter.com")
 		.matching((req) => {
-			const condition = req.path.startsWith("/1.1");
+			const condition =
+				req.path.startsWith("/1.1") || req.path.startsWith("/img");
 			return condition;
+		})
+		.thenForwardTo("https://localhost", { ignoreHostHttpsErrors: true });
+	server
+		.forAnyRequest()
+		.forHostname("pbs.twimg.com")
+		.matching((req) => {
+			return true;
 		})
 		.thenForwardTo("https://localhost", { ignoreHostHttpsErrors: true });
 	server

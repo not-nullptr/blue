@@ -28,6 +28,9 @@ const user = new mongoose.Schema({
 	url: {
 		type: "String",
 	},
+	verified_type: {
+		type: "String",
+	},
 	entities: {
 		url: {
 			urls: {

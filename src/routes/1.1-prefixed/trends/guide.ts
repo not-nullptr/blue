@@ -1,15 +1,4 @@
 import express from "express";
-import User from "../../../models/User";
-import {
-	AdvertiserAccountType,
-	EXTProfileImageShape,
-	IUser,
-	Resize,
-	State,
-	Status,
-	Type,
-} from "../../../types/guide";
-
 import { Timeline } from "../../../types/guideClass";
 
 const router = express.Router();

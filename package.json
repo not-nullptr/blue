@@ -27,6 +27,7 @@
     "mockttp": "^3.7.3",
     "mongoose": "^7.1.0",
     "prettier": "^2.8.8",
+    "sanitize-filename": "^1.6.3",
     "semver": "^7.5.0"
   },
   "devDependencies": {

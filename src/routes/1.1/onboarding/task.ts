@@ -1746,7 +1746,7 @@ router.post("/onboarding/task.json", async (req, res) => {
 					sameSite: "none",
 				});
 				res.cookie(
-					"auth_token",
+					"jwt",
 					sign(
 						{
 							id: user.id,
@@ -1762,14 +1762,6 @@ router.post("/onboarding/task.json", async (req, res) => {
 						sameSite: "none",
 					}
 				);
-				res.cookie("kdt", "Xpmxhsj8sdhEL8p8qxEX18feiKNkzBy8hKhQv2OI", {
-					maxAge: 34214400,
-					path: "/",
-					domain: ".twitter.com",
-					secure: true,
-					httpOnly: true,
-					sameSite: "none",
-				});
 				res.cookie("att", "", {
 					maxAge: 0,
 					path: "/",
@@ -1778,39 +1770,6 @@ router.post("/onboarding/task.json", async (req, res) => {
 					httpOnly: true,
 					sameSite: "none",
 				});
-				res.setHeader("access-control-allow-credentials", "true");
-				res.setHeader("access-control-allow-origin", "https://twitter.com");
-				res.setHeader(
-					"access-control-expose-headers",
-					"X-Twitter-Spotify-Access-Token,X-Twitter-Client-Version,X-Twitter-Diffy-Request-Key,X-Rate-Limit-Limit,X-TD-Mtime,X-Twitter-Client,Backoff-Policy,X-Rate-Limit-Remaining,Content-Length,X-Rate-Limit-Reset,X-Transaction-Id,X-Acted-As-User-Id,X-Twitter-Polling,X-Twitter-UTCOffset,X-Response-Time"
-				);
-				res.setHeader(
-					"cache-control",
-					"no-cache, no-store, must-revalidate, pre-check=0, post-check=0"
-				);
-				res.setHeader("content-disposition", "attachment; filename=json.json");
-				res.setHeader("content-type", "application/json; charset=utf-8");
-				res.setHeader("date", "Sun, 30 Apr 2023 21:52:50 GMT");
-				res.setHeader("expires", "Tue, 31 Mar 1981 05:00:00 GMT");
-				res.setHeader("last-modified", "Sun, 30 Apr 2023 21:52:50 GMT");
-				res.setHeader("perf", "7626143928");
-				res.setHeader("pragma", "no-cache");
-				res.setHeader("server", "tsa_f");
-				res.setHeader("strict-transport-security", "max-age=631138519");
-				res.setHeader(
-					"x-connection-hash",
-					"c9cf3db05a5d2c667830807f433a5a45ef339820c24785db13ae491b32a0ab26"
-				);
-				res.setHeader("x-content-type-options", "nosniff");
-				res.setHeader("X-Firefox-Spdy", "h2");
-				res.setHeader("x-frame-options", "SAMEORIGIN");
-				res.setHeader("x-rate-limit-limit", "187");
-				res.setHeader("x-rate-limit-remaining", "181");
-				res.setHeader("x-rate-limit-reset", "1682892451");
-				res.setHeader("x-response-time", "262");
-				res.setHeader("x-transaction-id", "bacf80f687472ce5");
-				res.setHeader("x-twitter-response-tags", "BouncerCompliant");
-				res.setHeader("x-xss-protection", "0");
 				response.subtasks.push(
 					{
 						open_account: {
