@@ -1,7 +1,6 @@
 namespace NodeJS {
 	interface ProcessEnv {
 		PORT: number;
+		JWT_SECRET: string;
 	}
 }
-
-var __basedir: string;
