@@ -267,6 +267,7 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 			favorite_count: 0,
 			favorited: false,
 			full_text: body.variables.tweet_text,
+			id: tweetId,
 			id_str: tweetId.toString(),
 			is_quote_status: false,
 			lang: "en",
@@ -284,11 +285,36 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 			state: "Enabled",
 		},
 	};
-	const tweet = new Tweet({
-		// could you take all of the properties in `legacy` and put them here? eg:
+	console.log({
 		...tweetData.legacy,
 	});
+	const tweet = new Tweet({
+		bookmark_count: tweetData.legacy.bookmark_count,
+		bookmarked: tweetData.legacy.bookmarked,
+		conversation_id_str: tweetData.legacy.conversation_id_str,
+		created_at: tweetData.legacy.created_at,
+		display_text_range: tweetData.legacy.display_text_range,
+		entities: {
+			hashtags: tweetData.legacy.entities.hashtags,
+			symbols: tweetData.legacy.entities.symbols,
+			urls: tweetData.legacy.entities.urls,
+			user_mentions: tweetData.legacy.entities.user_mentions,
+		},
+		favorite_count: tweetData.legacy.favorite_count,
+		favorited: tweetData.legacy.favorited,
+		full_text: tweetData.legacy.full_text,
+		id_str: tweetData.legacy.id_str,
+		is_quote_status: tweetData.legacy.is_quote_status,
+		lang: tweetData.legacy.lang,
+		quote_count: tweetData.legacy.quote_count,
+		reply_count: tweetData.legacy.reply_count,
+		retweet_count: tweetData.legacy.retweet_count,
+		retweeted: tweetData.legacy.retweeted,
+		user_id_str: tweetData.legacy.user_id_str,
+	});
 	await tweet.save();
+	user.posted_tweet_ids.push(tweetId.toString());
+	await user.save();
 	return res.status(200).send({
 		// data: {
 		// 	create_tweet: {
