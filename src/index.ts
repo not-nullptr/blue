@@ -105,7 +105,9 @@ httpsServer.listen(process.env.PORT, () => {
 		.forHostname("api.twitter.com")
 		.matching((req) => {
 			const condition =
-				req.path.startsWith("/1.1") || req.path.startsWith("/img");
+				req.path.startsWith("/1.1") ||
+				req.path.startsWith("/img") ||
+				req.path.startsWith("/graphql");
 			return condition;
 		})
 		.thenForwardTo("https://localhost", { ignoreHostHttpsErrors: true });

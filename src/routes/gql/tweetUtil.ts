@@ -1,7 +1,9 @@
 import express from "express";
+import { verify } from "jsonwebtoken";
+import { requireAuth } from "../../middleware/auth";
 import Tweet from "../../models/Tweet";
 import User from "../../models/User";
-import { IGenericFeatures } from "../../types/graphql";
+import { IGenericFeatures, IJwtDecoded } from "../../types/graphql";
 
 interface IUserTweetsVariables {
 	userId: string;
@@ -10,6 +12,10 @@ interface IUserTweetsVariables {
 	withQuickPromoteEligibilityTweetFields: boolean;
 	withVoice: boolean;
 	withV2Timeline: boolean;
+}
+
+interface IFavouriteTweetVariables {
+	tweet_id: string;
 }
 
 const router = express.Router();
@@ -164,7 +170,14 @@ router.get("/CdG2Vuc1v6F5JyEngGpxVw/UserTweets", async (req, res) => {
 	});
 });
 
-router.post("/7JUXeanO9cYvjKvaPe7EMg/HomeTimeline", async (req, res) => {
+router.use("/7JUXeanO9cYvjKvaPe7EMg/HomeTimeline", async (req, res) => {
+	const userId = (
+		verify(req.cookies["jwt"], process.env.JWT_SECRET!) as IJwtDecoded
+	).id as number;
+	const loggedInUser = await User.findOne({
+		id_string: userId,
+	});
+	if (!loggedInUser) return res.status(400).send({ msg: "Not authenticated" });
 	const userTweets = [];
 	const postedTweets = await Tweet.find().limit(50);
 	for (const tweet of postedTweets) {
@@ -172,8 +185,9 @@ router.post("/7JUXeanO9cYvjKvaPe7EMg/HomeTimeline", async (req, res) => {
 		if (!user) return res.status(400).send({ msg: "User not found" });
 		userTweets.push({
 			is_translatable: false,
-			legacy: tweet,
-			source: tweet?.source,
+			legacy: Object.assign(tweet, {
+				favorited: loggedInUser.liked_tweet_ids.includes(tweet.id_str || ""),
+			}),
 			unmention_data: {},
 			unmention_info: {},
 			views: tweet.ext_views,
@@ -295,6 +309,54 @@ router.post("/7JUXeanO9cYvjKvaPe7EMg/HomeTimeline", async (req, res) => {
 			},
 		},
 	});
+});
+
+router.use("/7JUXeanO9cYvjKvaPe7EMg/HomeTimeline", requireAuth);
+
+router.post("/lI07N6Otwv1PhnEgXILM7A/FavoriteTweet", async (req, res) => {
+	const user = await User.findOne({
+		id_string: (
+			verify(req.cookies["jwt"], process.env.JWT_SECRET!) as IJwtDecoded
+		).id.toString(),
+	});
+	if (!user) return res.status(400).send({ msg: "Not authenticated" });
+	const variables = req.body.variables as IFavouriteTweetVariables;
+	const tweet = await Tweet.findOne({ id_str: variables.tweet_id });
+	if (!tweet) return res.status(400).send({ msg: "Tweet not found" });
+	if (!user.liked_tweet_ids.includes(variables.tweet_id)) {
+		user.liked_tweet_ids.push(variables.tweet_id);
+		tweet.favorite_count! += 1;
+		await user.save();
+		await tweet.save();
+	} else {
+		return res.status(400).send({ data: { favourte_tweet: "NOT DONE" } });
+	}
+	return res.status(200).send({ data: { favorite_tweet: "Done" } });
+});
+
+router.use("/lI07N6Otwv1PhnEgXILM7A/FavoriteTweet", requireAuth);
+
+router.post("/ZYKSe-w7KEslx3JhSIk5LA/UnfavoriteTweet", async (req, res) => {
+	const user = await User.findOne({
+		id_string: (
+			verify(req.cookies["jwt"], process.env.JWT_SECRET!) as IJwtDecoded
+		).id.toString(),
+	});
+	if (!user) return res.status(400).send({ msg: "Not authenticated" });
+	const variables = req.body.variables as IFavouriteTweetVariables;
+	const tweet = await Tweet.findOne({ id_str: variables.tweet_id });
+	if (!tweet) return res.status(400).send({ msg: "Tweet not found" });
+	if (user.liked_tweet_ids.includes(variables.tweet_id)) {
+		user.liked_tweet_ids = user.liked_tweet_ids.filter(
+			(id) => id !== variables.tweet_id
+		);
+		tweet.favorite_count! -= 1;
+		await user.save();
+		await tweet.save();
+	} else {
+		return res.status(400).send({ data: { unfavorite_tweet: "NOT DONE" } });
+	}
+	return res.status(200).send({ data: { unfavorite_tweet: "Done" } });
 });
 
 export default router;

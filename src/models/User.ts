@@ -148,6 +148,9 @@ const user = new mongoose.Schema({
 	pinned_tweet_ids_str: {
 		type: ["String"],
 	},
+	liked_tweet_ids: {
+		type: ["String"],
+	},
 	posted_tweet_ids: {
 		type: ["String"],
 	},
