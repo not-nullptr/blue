@@ -11,7 +11,7 @@ router.use("/account/logout.json", async (req, res) => {
 		httpOnly: true,
 		sameSite: "none",
 	});
-	res.cookie("auth_token", "my name is walter hartwell white", {
+	res.cookie("jwt", "my name is walter hartwell white", {
 		maxAge: 0,
 		path: "/",
 		domain: ".twitter.com",

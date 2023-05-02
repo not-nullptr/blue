@@ -1304,7 +1304,6 @@ router.post("/onboarding/task.json", async (req, res) => {
 		subtasks: [],
 	} as TaskRes;
 	for (const subtask of body.subtask_inputs) {
-		console.log(subtask.subtask_id);
 		let subtaskResponse = { flow_token: body.flow_token, status: "success" };
 		switch (subtask.subtask_id) {
 			case "LoginJsInstrumentationSubtask": {
@@ -1656,9 +1655,6 @@ router.post("/onboarding/task.json", async (req, res) => {
 					username: username.toString(),
 					type: "signup",
 				});
-				console.log(
-					flowTokens.find((token) => (token.token = body.flow_token))
-				);
 				response.subtasks.push({
 					enter_password: {
 						email: subtask.sign_up.email,
@@ -1703,7 +1699,6 @@ router.post("/onboarding/task.json", async (req, res) => {
 				if (!user) return res.status(400).send();
 				const authenticated = await (async () =>
 					await compare(flow.password!, user.password!))();
-				console.log(authenticated);
 				if (authenticated) {
 					// res.cookie("twid", `u=${user.id}`);
 					flow.id = user.id;
@@ -1737,6 +1732,14 @@ router.post("/onboarding/task.json", async (req, res) => {
 					? await User.findOne({ email: flow.email }).select("+password")
 					: await User.findOne({ name: flow.name }).select("+password");
 				if (!user) return res.status(400).send();
+				res.cookie("_twitter_sess", "test", {
+					maxAge: 34214400,
+					path: "/",
+					domain: ".twitter.com",
+					secure: true,
+					httpOnly: true,
+					sameSite: "none",
+				});
 				res.cookie("twt_id", `u=${flow.id}`, {
 					maxAge: 34214400,
 					path: "/",

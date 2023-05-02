@@ -29,11 +29,19 @@ app.use(
 );
 
 async function mountRoute(routePath: string, root: string) {
-	// console.log(`Mounted ${routePath.replace("src/", "")}!`);
+	//
 	const router = ((await import(routePath.replace("src/", "./"))) as IRouteFile)
 		.default;
 	app.use(root, router);
 }
+
+app.use((req, res, next) => {
+	if (req.path.includes("error_log.json")) next();
+	console.log(
+		`${req.path} | ${req.cookies.jwt ? `Logged in?` : `Logged out?`}`
+	);
+	next();
+});
 
 const routes11 = searchDirForTsFiles("src/routes/1.1");
 const routes11Prefixed = searchDirForTsFiles("src/routes/1.1-prefixed");
@@ -71,7 +79,7 @@ twimg.forEach(async (routePath) => {
 // });
 
 // setTimeout(() => {
-// 	console.log(app._router);
+//
 // }, 1000);
 
 const options = {
@@ -82,7 +90,7 @@ const options = {
 const httpsServer = https.createServer(options, app);
 
 httpsServer.listen(process.env.PORT, () => {
-	console.log(`Blue is listening on ${process.env.PORT}`);
+	console.log(`Blue is listening on port ${process.env.PORT}.`);
 });
 
 (async () => {
@@ -133,5 +141,5 @@ httpsServer.listen(process.env.PORT, () => {
 		.thenForwardTo("https://localhost", { ignoreHostHttpsErrors: true });
 	server.forUnmatchedRequest().thenPassThrough();
 	await server.start();
-	console.log(`Blue proxy is running on port ${server.port}`);
+	console.log(`Blue proxy is listening on port ${server.port}.`);
 })();

@@ -12,7 +12,7 @@ router.use("/XeaGEEWXp54Km4mVNvcMmg/Viewer", async (req, res) => {
 	const user = await User.findOne({
 		id,
 	});
-	console.log(id);
+
 	if (!user) return res.status(400).send({ msg: "User not found" });
 	return res.status(200).send({
 		data: {

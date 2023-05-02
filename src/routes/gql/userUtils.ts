@@ -202,8 +202,8 @@ router.get(
 			screen_name: screenName,
 		});
 		if (!user) return res.status(400).send({ msg: "User not found" });
-		if (user.id !== jwtParams.id)
-			return res.status(401).send({ msg: "Unauthorized" });
+		// if (user.id !== jwtParams.id)
+		// 	return res.status(401).send({ msg: "Unauthorized" });
 		return res.status(200).send({
 			data: {
 				user_result_by_screen_name: {
@@ -215,22 +215,20 @@ router.get(
 							blocking: false,
 							followed_by: false,
 							following: false,
-							name: "notnullptr",
+							name: user.name,
 							protected: false,
-							screen_name: "484648334416",
+							screen_name: user.screen_name,
 						},
 						profilemodules: {
 							v1: [],
 						},
-						rest_id: "1652358172495998980",
+						rest_id: user._id,
 					},
 				},
 			},
 		});
 	}
 );
-
-router.use("/9zwVLJ48lmVUk8u_Gh9DmA/ProfileSpotlightsQuery", requireAuth);
 
 router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 	const body = req.body as ICreateTweetBody;
@@ -279,9 +277,6 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 			state: "Enabled",
 		},
 	};
-	console.log({
-		...tweetData.legacy,
-	});
 	const tweet = new Tweet({
 		bookmark_count: tweetData.legacy.bookmark_count,
 		bookmarked: tweetData.legacy.bookmarked,
