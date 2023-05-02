@@ -21,6 +21,13 @@ interface IFavouriteTweetVariables {
 const router = express.Router();
 
 router.get("/CdG2Vuc1v6F5JyEngGpxVw/UserTweets", async (req, res) => {
+	const loggedInUser = req.cookies["jwt"]
+		? await User.findOne({
+				id_string: (
+					verify(req.cookies["jwt"], process.env.JWT_SECRET!) as IJwtDecoded
+				).id,
+		  })
+		: undefined;
 	const features = JSON.parse(
 		req.query.features!.toString()
 	) as IGenericFeatures;
@@ -37,7 +44,13 @@ router.get("/CdG2Vuc1v6F5JyEngGpxVw/UserTweets", async (req, res) => {
 		const tweet = await Tweet.findOne({ id_str: id });
 		userTweets.push({
 			is_translatable: false,
-			legacy: tweet,
+			legacy: tweet
+				? Object.assign(tweet, {
+						favorited: loggedInUser
+							? loggedInUser.liked_tweet_ids.includes(tweet.id_str || "")
+							: false,
+				  })
+				: tweet,
 			source: tweet?.source,
 			unmention_data: {},
 			unmention_info: {},
