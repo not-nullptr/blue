@@ -1330,8 +1330,8 @@ router.post("/onboarding/task.json", async (req, res) => {
 						followers_count: 0,
 						fast_followers_count: 0,
 						normal_followers_count: 0,
-						friends_count: 249,
-						listed_count: 121127,
+						friends_count: 0,
+						listed_count: 0,
 						created_at: formatDate(new Date()),
 						favourites_count: 0,
 						utc_offset: null,
@@ -1351,9 +1351,9 @@ router.post("/onboarding/task.json", async (req, res) => {
 							"https://abs.twimg.com/images/themes/theme1/bg.png",
 						profile_background_tile: false,
 						profile_image_url:
-							"http://pbs.twimg.com/profile_images/1346170289642725376/QjeO2NSL_400x400.jpg",
+							"http://pbs.twimg.com/profile_images/1346170289642725376/default-pfp.jpg",
 						profile_image_url_https:
-							"https://pbs.twimg.com/profile_images/1346170289642725376/QjeO2NSL_400x400.jpg",
+							"https://pbs.twimg.com/profile_images/1346170289642725376/default-pfp.jpg",
 						profile_banner_url: null,
 						profile_link_color: "0084B4",
 						profile_sidebar_border_color: "C0DEED",
@@ -1681,7 +1681,7 @@ router.post("/onboarding/task.json", async (req, res) => {
 							text: "Step 5 of 5",
 						},
 					},
-					subtask_id: "UsernameEntry",
+					subtask_id: "LoginJsInstrumentationSubtask",
 				});
 				break;
 			}

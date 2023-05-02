@@ -184,9 +184,10 @@ router.get("/CdG2Vuc1v6F5JyEngGpxVw/UserTweets", async (req, res) => {
 });
 
 router.use("/7JUXeanO9cYvjKvaPe7EMg/HomeTimeline", async (req, res) => {
-	const userId = (
-		verify(req.cookies["jwt"], process.env.JWT_SECRET!) as IJwtDecoded
-	).id as number;
+	const userId = req.cookies["jwt"]
+		? ((verify(req.cookies["jwt"], process.env.JWT_SECRET!) as IJwtDecoded)
+				.id as number)
+		: undefined;
 	const loggedInUser = await User.findOne({
 		id_string: userId,
 	});

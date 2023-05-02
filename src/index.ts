@@ -9,6 +9,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import * as mockttp from "mockttp";
 import cookieParser = require("cookie-parser");
+import type { ErrorRequestHandler } from "express";
 
 dotenv.config();
 
@@ -74,13 +75,16 @@ twimg.forEach(async (routePath) => {
 	await mountRoute(routePath, "/");
 });
 
-// app.use((req, res, next) => {
-// 	return res.status(200).send({ status: "success" });
-// });
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+	console.log(err.stack);
+	return res.status(500).send({
+		msg:
+			"An error occured within the server. Open an issue with the information below on the GitHub, including what you did leading up to this error.\n" +
+			err.stack,
+	});
+};
 
-// setTimeout(() => {
-//
-// }, 1000);
+app.use(errorHandler);
 
 const options = {
 	key: fs.readFileSync("certs/testCA.key", "utf8"),
