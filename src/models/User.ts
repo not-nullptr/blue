@@ -148,6 +148,9 @@ const user = new mongoose.Schema({
 	pinned_tweet_ids_str: {
 		type: ["String"],
 	},
+	posted_tweet_ids: {
+		type: ["String"],
+	},
 	has_custom_timelines: {
 		type: "Boolean",
 	},

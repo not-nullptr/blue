@@ -17,7 +17,8 @@ export interface SubtaskInput {
 		| "SelectAvatar"
 		| "UsernameEntryBio"
 		| "NotificationsPermissionPrompt"
-		| "AccountDuplicationCheck";
+		| "AccountDuplicationCheck"
+		| "UsernameEntry";
 	settings_list?: SettingsList;
 	[key: string]: any; // dynamic(tm)
 }

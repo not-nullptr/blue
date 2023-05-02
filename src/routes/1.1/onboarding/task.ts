@@ -1685,7 +1685,7 @@ router.post("/onboarding/task.json", async (req, res) => {
 							text: "Step 5 of 5",
 						},
 					},
-					subtask_id: "LoginJsInstrumentationSubtask",
+					subtask_id: "UsernameEntry",
 				});
 				break;
 			}
@@ -1781,7 +1781,7 @@ router.post("/onboarding/task.json", async (req, res) => {
 							},
 							user: {
 								id: user.id,
-								id_str: user.id.toString(),
+								id_str: user.id_string,
 								name: user.name,
 								screen_name: user.screen_name,
 							},
@@ -1808,47 +1808,79 @@ router.post("/onboarding/task.json", async (req, res) => {
 						subtask_id: "LoginOpenHomeTimeline",
 					}
 				);
-				return res.status(200).send({
-					flow_token: body.flow_token,
-					status: "success",
-					subtasks: [
-						{
-							open_account: {
-								attribution_event: "login",
-								next_link: {
-									link_id: "next_link",
-									link_type: "subtask",
-									subtask_id: "SuccessExit",
+			}
+			case "UsernameEntry": {
+				response.subtasks.push({
+					settings_list: {
+						detail_text: {
+							entities: [
+								{
+									from_index: 23,
+									navigation_link: {
+										link_id: "signup_deep_link",
+										link_type: "deep_link_and_abort",
+										url: "https://twitter.com/i/flow/signup",
+									},
+									to_index: 30,
 								},
-								user: {
-									id: user.id,
-									id_str: user.id_string,
-									name: user.name,
-									screen_name: user.screen_name,
-								},
-							},
-							subtask_id: "LoginSuccessSubtask",
+							],
+							text: "Don't have an account? Sign up",
 						},
-						{
-							open_link: {
-								link: {
-									link_id: "next_link",
-									link_type: "subtask",
-									subtask_id: "LoginOpenHomeTimeline",
-								},
+						header: {
+							primary_text: {
+								entities: [],
+								text: "Enter a username",
 							},
-							subtask_id: "SuccessExit",
 						},
-						{
-							open_home_timeline: {
-								next_link: {
-									link_id: "next_link",
-									link_type: "abort",
+						horizontal_style: "compact",
+						navigation_style: "hide",
+						settings: [
+							{
+								value_data: {
+									text_field: {
+										content_type: "text",
+										hint_text: "Phone, email, or username",
+									},
 								},
+								value_identifier: "user_identifier",
+								value_type: "text_field",
 							},
-							subtask_id: "LoginOpenHomeTimeline",
-						},
-					],
+							{
+								value_data: {
+									button: {
+										navigation_link: {
+											label: "Next",
+											link_id: "next_link",
+											link_type: "task",
+										},
+										preferred_size: "normal",
+										style: "primary",
+									},
+								},
+								value_identifier: "next_button",
+								value_type: "button",
+							},
+							{
+								value_data: {
+									button: {
+										navigation_link: {
+											label: "Forgot password?",
+											link_id: "forget_password",
+											link_type: "subtask",
+											subtask_id: "RedirectToPasswordReset",
+										},
+										preferred_size: "normal",
+										style: "secondary",
+									},
+								},
+								value_identifier: "forgot_password",
+								value_type: "button",
+							},
+						],
+						style: "step",
+					},
+					subtask_back_navigation: "cancel_flow",
+					subtask_id: "LoginJsInstrumentationSubtask",
 				});
 			}
 			default: {

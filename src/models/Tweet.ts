@@ -1,20 +1,17 @@
 import mongoose from "mongoose";
 
 const tweet = new mongoose.Schema({
-	created_at: {
-		type: "Date",
-	},
-	id: {
+	bookmark_count: {
 		type: "Number",
 	},
-	id_str: {
-		type: "String",
-	},
-	full_text: {
-		type: "String",
-	},
-	truncated: {
+	bookmarked: {
 		type: "Boolean",
+	},
+	conversation_id_str: {
+		type: "String",
+	},
+	created_at: {
+		type: "String",
 	},
 	display_text_range: {
 		type: ["Number"],
@@ -26,12 +23,51 @@ const tweet = new mongoose.Schema({
 		symbols: {
 			type: "Array",
 		},
-		user_mentions: {
-			type: "Array",
-		},
 		urls: {
 			type: "Array",
 		},
+		user_mentions: {
+			type: "Array",
+		},
+	},
+	favorite_count: {
+		type: "Number",
+	},
+	favorited: {
+		type: "Boolean",
+	},
+	full_text: {
+		type: "String",
+	},
+	id_str: {
+		type: "String",
+	},
+	is_quote_status: {
+		type: "Boolean",
+	},
+	lang: {
+		type: "String",
+	},
+	quote_count: {
+		type: "Number",
+	},
+	reply_count: {
+		type: "Number",
+	},
+	retweet_count: {
+		type: "Number",
+	},
+	retweeted: {
+		type: "Boolean",
+	},
+	user_id_str: {
+		type: "String",
+	},
+	id: {
+		type: "Number",
+	},
+	truncated: {
+		type: "Boolean",
 	},
 	source: {
 		type: "String",
@@ -54,9 +90,6 @@ const tweet = new mongoose.Schema({
 	user_id: {
 		type: "Number",
 	},
-	user_id_str: {
-		type: "String",
-	},
 	geo: {
 		type: "Mixed",
 	},
@@ -69,26 +102,8 @@ const tweet = new mongoose.Schema({
 	contributors: {
 		type: "Mixed",
 	},
-	is_quote_status: {
-		type: "Boolean",
-	},
-	retweet_count: {
-		type: "Number",
-	},
-	favorite_count: {
-		type: "Number",
-	},
-	reply_count: {
-		type: "Number",
-	},
-	quote_count: {
-		type: "Number",
-	},
 	conversation_id: {
 		type: "Number",
-	},
-	conversation_id_str: {
-		type: "String",
 	},
 	conversation_control: {
 		policy: {
@@ -99,15 +114,6 @@ const tweet = new mongoose.Schema({
 				type: "String",
 			},
 		},
-	},
-	favorited: {
-		type: "Boolean",
-	},
-	retweeted: {
-		type: "Boolean",
-	},
-	lang: {
-		type: "String",
 	},
 	supplemental_language: {
 		type: "Mixed",
