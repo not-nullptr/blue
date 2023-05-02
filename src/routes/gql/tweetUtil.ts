@@ -32,8 +32,7 @@ router.get("/CdG2Vuc1v6F5JyEngGpxVw/UserTweets", async (req, res) => {
 		userTweets.push({
 			is_translatable: false,
 			legacy: tweet,
-			source:
-				'<a href="https://mobile.twitter.com" rel="nofollow">Blue Web App</a>',
+			source: tweet?.source,
 			unmention_data: {},
 			unmention_info: {},
 			views: {
@@ -127,13 +126,9 @@ router.get("/CdG2Vuc1v6F5JyEngGpxVw/UserTweets", async (req, res) => {
 																	eligibility: "IneligibleNotProfessional",
 																},
 																rest_id: Number(tweet.legacy.id_str),
-																source:
-																	'<a href="https://mobile.twitter.com" rel="nofollow">Twitter Web App</a>',
+																source: tweet.source,
 																unmention_data: {},
-																views: {
-																	count: "1",
-																	state: "EnabledWithCount",
-																},
+																views: tweet.views,
 															},
 														},
 													},
@@ -162,6 +157,139 @@ router.get("/CdG2Vuc1v6F5JyEngGpxVw/UserTweets", async (req, res) => {
 								immediateReactions: [],
 							},
 						},
+					},
+				},
+			},
+		},
+	});
+});
+
+router.post("/7JUXeanO9cYvjKvaPe7EMg/HomeTimeline", async (req, res) => {
+	const userTweets = [];
+	const postedTweets = await Tweet.find().limit(50);
+	for (const tweet of postedTweets) {
+		const user = await User.findOne({ id_string: tweet.user_id_str });
+		if (!user) return res.status(400).send({ msg: "User not found" });
+		userTweets.push({
+			is_translatable: false,
+			legacy: tweet,
+			source: tweet?.source,
+			unmention_data: {},
+			unmention_info: {},
+			views: tweet.ext_views,
+			user: user,
+		});
+	}
+	return res.status(200).send({
+		data: {
+			home: {
+				home_timeline_urt: {
+					instructions: [
+						{
+							entries: [
+								...userTweets.map((tweet, index) => {
+									if (!tweet.legacy) return;
+									return {
+										content: {
+											__typename: "TimelineTimelineItem",
+											entryType: "TimelineTimelineItem",
+											itemContent: {
+												__typename: "TimelineTweet",
+												itemType: "TimelineTweet",
+												tweetDisplayType: "Tweet",
+												tweet_results: {
+													result: {
+														__typename: "Tweet",
+														core: {
+															user_results: {
+																result: {
+																	__typename: "User",
+																	affiliates_highlighted_label:
+																		tweet.user.ext?.highlightedLabel?.r?.ok,
+																	business_account: {},
+																	id: tweet.user._id,
+																	is_blue_verified:
+																		tweet.user.ext_is_blue_verified,
+																	legacy: {
+																		created_at: tweet.user.created_at,
+																		default_profile: tweet.user.default_profile,
+																		default_profile_image:
+																			tweet.user.default_profile_image,
+																		description: tweet.user.description,
+																		entities: tweet.user.entities,
+																		fast_followers_count:
+																			tweet.user.fast_followers_count,
+																		favourites_count:
+																			tweet.user.favourites_count,
+																		followers_count: tweet.user.followers_count,
+																		friends_count: tweet.user.friends_count,
+																		has_custom_timelines:
+																			tweet.user.has_custom_timelines,
+																		is_translator: tweet.user.is_translator,
+																		listed_count: tweet.user.listed_count,
+																		location: tweet.user.location,
+																		media_count: tweet.user.media_count,
+																		name: tweet.user.name,
+																		normal_followers_count:
+																			tweet.user.normal_followers_count,
+																		pinned_tweet_ids_str:
+																			tweet.user.pinned_tweet_ids_str,
+																		possibly_sensitive: false,
+																		profile_image_url_https:
+																			tweet.user.profile_image_url_https,
+																		profile_interstitial_type: "",
+																		screen_name: tweet.user.screen_name,
+																		statuses_count: tweet.user.statuses_count,
+																		translator_type: tweet.user.translator_type,
+																		verified: tweet.user.verified,
+																		withheld_in_countries:
+																			tweet.user.withheld_in_countries,
+																	},
+																	profile_image_shape:
+																		tweet.user.ext_profile_image_shape,
+																	rest_id: tweet.user.id,
+																},
+															},
+														},
+														edit_perspective: {
+															favorited: false,
+															retweeted: false,
+														},
+														is_translatable: false,
+														legacy: tweet.legacy,
+														quick_promote_eligibility: {
+															eligibility: "IneligibleNotProfessional",
+														},
+														rest_id: Number(tweet.legacy.id_str),
+														source: tweet.legacy.source,
+														unmention_data: {},
+														views: tweet.views,
+													},
+												},
+											},
+										},
+										entryId: `tweet-${tweet.legacy.id_str}`,
+										sortIndex: index.toString(),
+									};
+								}),
+							],
+							type: "TimelineAddEntries",
+						},
+					],
+					responseObjects: {
+						feedbackActions: [
+							{
+								key: "589986573",
+								value: {
+									feedbackType: "Dismiss",
+									feedbackUrl:
+										"/1.1/onboarding/fatigue.json?flow_name=signup-persistent-nux&fatigue_group_name=PersistentNuxFatigueGroup&action_name=dismiss&scribe_name=dismiss&display_location=profile_best&served_time_secs=1682985304&injection_type=tile_carousel",
+									hasUndoAction: false,
+									prompt: "See less often",
+								},
+							},
+						],
+						immediateReactions: [],
 					},
 				},
 			},

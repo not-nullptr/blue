@@ -442,7 +442,7 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 						},
 						rest_id: tweetId.toString(),
 						source:
-							'<a href="https://mobile.twitter.com" rel="nofollow">Twitter Web App</a>',
+							'<a href="https://github.com/" rel="nofollow">Blue Web App</a>',
 						unmention_data: {},
 						unmention_info: {},
 						views: {
