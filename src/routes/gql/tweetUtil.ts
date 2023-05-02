@@ -41,7 +41,6 @@ router.get("/CdG2Vuc1v6F5JyEngGpxVw/UserTweets", async (req, res) => {
 			},
 		});
 	}
-	console.log(userTweets);
 	return res.status(200).send({
 		data: {
 			user: {

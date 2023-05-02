@@ -241,12 +241,6 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 	if (!user) return res.status(400).send({ msg: "User not found" });
 	const tweetId = randInt(12);
 	const tweetData = {
-		edit_control: {
-			edit_tweet_ids: [tweetId.toString()],
-			editable_until_msecs: "1682955684000",
-			edits_remaining: "5",
-			is_edit_eligible: true,
-		},
 		edit_perspective: {
 			favorited: false,
 			retweeted: false,
@@ -452,7 +446,7 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 						unmention_data: {},
 						unmention_info: {},
 						views: {
-							state: "Enabled",
+							state: "Disabled",
 						},
 					},
 				},
