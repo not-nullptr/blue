@@ -13,7 +13,7 @@ import { randInt, randStr } from "../../../util/randUtil";
 import { decode, sign, verify } from "jsonwebtoken";
 
 interface Params {
-	flow_name: "signup" | "login";
+	flow_name: "signup" | "login" | "setup_profile";
 }
 
 interface FlowTokenInfo {
@@ -1289,6 +1289,332 @@ router.post("/onboarding/task.json", async (req, res) => {
 									},
 								},
 							],
+						},
+					],
+				});
+			}
+			case "setup_profile": {
+				return res.status(200).send({
+					flow_token:
+						"u;1653802231005687820:-1683132234543:uIDBtpjcaEraV1UqoknwbEvX:0",
+					status: "success",
+					subtasks: [
+						{
+							select_avatar: {
+								next_link: {
+									label: "Next",
+									link_id: "next_link",
+									link_type: "subtask",
+									subtask_id: "SetupProfileUploadAvatarSubtask",
+								},
+								primary_text: {
+									entities: [],
+									text: "Pick a profile picture",
+								},
+								secondary_text: {
+									entities: [],
+									text: "Have a favorite selfie? Upload it now.",
+								},
+								skip_link: {
+									label: "Skip for now",
+									link_id: "skip_link",
+									link_type: "subtask",
+									subtask_id: "SelectBanner",
+								},
+							},
+							subtask_id: "SelectAvatar",
+						},
+						{
+							subtask_id: "SetupProfileUploadAvatarSubtask",
+							upload_media: {
+								next_link: {
+									link_id: "next_link",
+									link_type: "subtask",
+									subtask_id: "SelectBanner",
+								},
+								sources: [
+									{
+										media_data_reference: {
+											key: "selected_image",
+											subtask_id: "SelectAvatar",
+										},
+										style: "avatar",
+									},
+								],
+							},
+						},
+						{
+							select_banner: {
+								avatar_image_reference: {
+									key: "selected_image",
+									subtask_id: "SelectAvatar",
+								},
+								next_link: {
+									label: "Next",
+									link_id: "next_link",
+									link_type: "subtask",
+									subtask_id: "SetupProfileUploadBannerSubtask",
+								},
+								primary_text: {
+									entities: [],
+									text: "Pick a header",
+								},
+								secondary_text: {
+									entities: [],
+									text: "People who visit your profile will see it. Show your style.",
+								},
+								skip_link: {
+									label: "Skip for now",
+									link_id: "skip_link",
+									link_type: "subtask",
+									subtask_id: "EnterProfileBio",
+								},
+							},
+							subtask_id: "SelectBanner",
+						},
+						{
+							subtask_id: "SetupProfileUploadBannerSubtask",
+							upload_media: {
+								next_link: {
+									link_id: "next_link",
+									link_type: "subtask",
+									subtask_id: "EnterProfileBio",
+								},
+								sources: [
+									{
+										media_data_reference: {
+											key: "selected_image",
+											subtask_id: "SelectBanner",
+										},
+										style: "banner",
+									},
+								],
+							},
+						},
+						{
+							enter_text: {
+								default_text: "",
+								hint_text: "Your bio",
+								keyboard_type: "text",
+								max_length: 160,
+								multiline: true,
+								next_link: {
+									label: "Next",
+									link_id: "next_link",
+									link_type: "subtask",
+									subtask_id: "EnterProfileLocation",
+								},
+								primary_text: {
+									entities: [],
+									text: "Describe yourself",
+								},
+								secondary_text: {
+									entities: [],
+									text: "What makes you special? Don't think too hard, just have fun with it.",
+								},
+								skip_link: {
+									label: "Skip for now",
+									link_id: "skip_link",
+									link_type: "subtask",
+									subtask_id: "EnterProfileLocation",
+								},
+								suggestion_type: "interests",
+							},
+							subtask_id: "EnterProfileBio",
+						},
+						{
+							enter_username: {
+								cancel_link: {
+									label: "Skip for now",
+									link_id: "cancel_link",
+									link_type: "abort",
+								},
+								detail_texts: [
+									{
+										entities: [
+											{
+												from_index: 0,
+												navigation_link: {
+													link_id: "gilorin149",
+													link_type: "subtask",
+													subtask_id: "UsernameEntry",
+													subtask_navigation_context: {
+														action: "set_text",
+														text: "gilorin149",
+													},
+												},
+												to_index: 11,
+											},
+											{
+												from_index: 13,
+												navigation_link: {
+													link_id: "testttt66946021",
+													link_type: "subtask",
+													subtask_id: "UsernameEntry",
+													subtask_navigation_context: {
+														action: "set_text",
+														text: "testttt66946021",
+													},
+												},
+												to_index: 29,
+											},
+											{
+												from_index: 31,
+												navigation_link: {
+													link_id: "show_more_usernames",
+													link_type: "subtask",
+													subtask_id: "UsernameEntry",
+													subtask_navigation_context: {
+														action: "next_detail_text",
+													},
+												},
+												to_index: 40,
+											},
+										],
+										text: "@gilorin149, @testttt66946021\n\nShow more",
+									},
+									{
+										entities: [
+											{
+												from_index: 0,
+												navigation_link: {
+													link_id: "gilorin149",
+													link_type: "subtask",
+													subtask_id: "UsernameEntry",
+													subtask_navigation_context: {
+														action: "set_text",
+														text: "gilorin149",
+													},
+												},
+												to_index: 11,
+											},
+											{
+												from_index: 13,
+												navigation_link: {
+													link_id: "testttt66946021",
+													link_type: "subtask",
+													subtask_id: "UsernameEntry",
+													subtask_navigation_context: {
+														action: "set_text",
+														text: "testttt66946021",
+													},
+												},
+												to_index: 29,
+											},
+											{
+												from_index: 31,
+												navigation_link: {
+													link_id: "testttt66946022",
+													link_type: "subtask",
+													subtask_id: "UsernameEntry",
+													subtask_navigation_context: {
+														action: "set_text",
+														text: "testttt66946022",
+													},
+												},
+												to_index: 47,
+											},
+											{
+												from_index: 49,
+												navigation_link: {
+													link_id: "testttt66946023",
+													link_type: "subtask",
+													subtask_id: "UsernameEntry",
+													subtask_navigation_context: {
+														action: "set_text",
+														text: "testttt66946023",
+													},
+												},
+												to_index: 65,
+											},
+											{
+												from_index: 67,
+												navigation_link: {
+													link_id: "testttt66946025",
+													link_type: "subtask",
+													subtask_id: "UsernameEntry",
+													subtask_navigation_context: {
+														action: "set_text",
+														text: "testttt66946025",
+													},
+												},
+												to_index: 83,
+											},
+										],
+										text: "@gilorin149, @testttt66946021, @testttt66946022, @testttt66946023, @testttt66946025",
+									},
+								],
+								hint: "Username",
+								next_link: {
+									label: "Next",
+									link_id: "next_link",
+									link_type: "subtask",
+									subtask_id: "EnterProfileLocation",
+								},
+								primary_text: {
+									entities: [],
+									text: "What should people call you?",
+								},
+								secondary_text: {
+									entities: [],
+									text: "Your @username is unique. You can always change it later.",
+								},
+								skip_link: {
+									label: "Skip for now",
+									link_id: "skip_link",
+									link_type: "subtask",
+									subtask_id: "EnterProfileLocation",
+								},
+							},
+							subtask_id: "UsernameEntry",
+						},
+						{
+							enter_text: {
+								hint_text: "Location",
+								keyboard_type: "text",
+								max_length: 30,
+								multiline: false,
+								next_link: {
+									label: "Next",
+									link_id: "next_link",
+									link_type: "subtask",
+									subtask_id: "CallToAction",
+								},
+								primary_text: {
+									entities: [],
+									text: "Where do you live?",
+								},
+								secondary_text: {
+									entities: [],
+									text: "Find accounts in the same location as you.",
+								},
+								skip_link: {
+									label: "Skip for now",
+									link_id: "skip_link",
+									link_type: "subtask",
+									subtask_id: "CallToAction",
+								},
+								suggestion_type: "location",
+							},
+							subtask_id: "EnterProfileLocation",
+						},
+						{
+							cta: {
+								primary_action_link: {
+									label: "See profile",
+									link_id: "next_link",
+									link_type: "task",
+								},
+								primary_action_style: "primary",
+								primary_text: {
+									entities: [],
+									text: "Your profile is updated",
+								},
+								secondary_action_style: "text",
+								style: "centered",
+								text_alignment: "centered",
+							},
+							subtask_id: "CallToAction",
 						},
 					],
 				});

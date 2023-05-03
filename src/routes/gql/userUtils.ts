@@ -16,6 +16,13 @@ import { randInt } from "../../util/randUtil";
 
 const router = express.Router();
 
+interface IUserMention {
+	id_str: string;
+	name: string;
+	screen_name: string;
+	indices: [number, number];
+}
+
 // router.get("/P7qs2Sf7vu1LDKbzDW9FSA/UserMedia", async (req, res) => {
 // 	const features = JSON.parse(
 // 		req.query.features!.toString()
@@ -191,10 +198,6 @@ router.get("/GazOglcBvgLigl3ywt6b3Q/UserByRestId", async (req, res) => {
 router.get(
 	"/9zwVLJ48lmVUk8u_Gh9DmA/ProfileSpotlightsQuery",
 	async (req, res) => {
-		const jwtParams = verify(
-			req.cookies["jwt"] as string,
-			process.env.JWT_SECRET!
-		) as IJwtDecoded;
 		const variables = JSON.parse(
 			req.query.variables!.toString()
 		) as IProfileSpotlightsQueryVariables;
@@ -241,6 +244,20 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 	).id as number;
 	const user = await User.findOne({ id });
 	if (!user) return res.status(400).send({ msg: "User not found" });
+	const tags = [] as IUserMention[];
+	const matches = body.variables.tweet_text.matchAll(/@(\S+)/gm);
+	for (const match of matches) {
+		const withTag = match[0];
+		const withoutTag = match[1];
+		const user = await User.findOne({ screen_name: withoutTag });
+		if (!user) break;
+		tags.push({
+			id_str: user.id_string,
+			name: user.name,
+			screen_name: user.screen_name,
+			indices: [],
+		});
+	}
 	const tweetId = randInt(12);
 	const tweetData = {
 		edit_perspective: {
