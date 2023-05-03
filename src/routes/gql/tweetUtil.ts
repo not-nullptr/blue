@@ -96,38 +96,7 @@ router.get("/CdG2Vuc1v6F5JyEngGpxVw/UserTweets", async (req, res) => {
 																			is_blue_verified:
 																				user.ext_is_blue_verified,
 																			legacy: {
-																				created_at: user.created_at,
-																				default_profile: user.default_profile,
-																				default_profile_image:
-																					user.default_profile_image,
-																				description: user.description,
-																				entities: user.entities,
-																				fast_followers_count:
-																					user.fast_followers_count,
-																				favourites_count: user.favourites_count,
-																				followers_count: user.followers_count,
-																				friends_count: user.friends_count,
-																				has_custom_timelines:
-																					user.has_custom_timelines,
-																				is_translator: user.is_translator,
-																				listed_count: user.listed_count,
-																				location: user.location,
-																				media_count: user.media_count,
-																				name: user.name,
-																				normal_followers_count:
-																					user.normal_followers_count,
-																				pinned_tweet_ids_str:
-																					user.pinned_tweet_ids_str,
-																				possibly_sensitive: false,
-																				profile_image_url_https:
-																					user.profile_image_url_https,
-																				profile_interstitial_type: "",
-																				screen_name: user.screen_name,
-																				statuses_count: user.statuses_count,
-																				translator_type: user.translator_type,
-																				verified: user.verified,
-																				withheld_in_countries:
-																					user.withheld_in_countries,
+																				...(user as any)._doc,
 																			},
 																			profile_image_shape:
 																				user.ext_profile_image_shape,
@@ -239,39 +208,7 @@ router.use("/7JUXeanO9cYvjKvaPe7EMg/HomeTimeline", async (req, res) => {
 																	is_blue_verified:
 																		tweet.user.ext_is_blue_verified,
 																	legacy: {
-																		created_at: tweet.user.created_at,
-																		default_profile: tweet.user.default_profile,
-																		default_profile_image:
-																			tweet.user.default_profile_image,
-																		description: tweet.user.description,
-																		entities: tweet.user.entities,
-																		fast_followers_count:
-																			tweet.user.fast_followers_count,
-																		favourites_count:
-																			tweet.user.favourites_count,
-																		followers_count: tweet.user.followers_count,
-																		friends_count: tweet.user.friends_count,
-																		has_custom_timelines:
-																			tweet.user.has_custom_timelines,
-																		is_translator: tweet.user.is_translator,
-																		listed_count: tweet.user.listed_count,
-																		location: tweet.user.location,
-																		media_count: tweet.user.media_count,
-																		name: tweet.user.name,
-																		normal_followers_count:
-																			tweet.user.normal_followers_count,
-																		pinned_tweet_ids_str:
-																			tweet.user.pinned_tweet_ids_str,
-																		possibly_sensitive: false,
-																		profile_image_url_https:
-																			tweet.user.profile_image_url_https,
-																		profile_interstitial_type: "",
-																		screen_name: tweet.user.screen_name,
-																		statuses_count: tweet.user.statuses_count,
-																		translator_type: tweet.user.translator_type,
-																		verified: tweet.user.verified,
-																		withheld_in_countries:
-																			tweet.user.withheld_in_countries,
+																		...(tweet.user as any)._doc,
 																	},
 																	profile_image_shape:
 																		tweet.user.ext_profile_image_shape,

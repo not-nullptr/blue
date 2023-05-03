@@ -125,6 +125,13 @@ httpsServer.listen(process.env.PORT, () => {
 		.thenForwardTo("https://localhost", { ignoreHostHttpsErrors: true });
 	server
 		.forAnyRequest()
+		.forHostname("abs.twimg.com")
+		.matching((req) => {
+			return req.path.startsWith("/images/themes");
+		})
+		.thenForwardTo("https://localhost", { ignoreHostHttpsErrors: true });
+	server
+		.forAnyRequest()
 		.forHostname("pbs.twimg.com")
 		.matching((req) => {
 			return true;

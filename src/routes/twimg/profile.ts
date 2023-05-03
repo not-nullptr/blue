@@ -8,4 +8,9 @@ router.get("/profile_images/*", (req, res) => {
 	return res.sendFile(`${rootPath}/img/${image}`);
 });
 
+router.get("/images/*", (req, res) => {
+	const [image] = req.url.split("/").slice(-1);
+	return res.sendFile(`${rootPath}/img/${image}`);
+});
+
 export default router;
