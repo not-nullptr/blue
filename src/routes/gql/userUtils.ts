@@ -76,7 +76,9 @@ router.get("/sLVLhk0bGj3MVFEKTdax1w/UserByScreenName", async (req, res) => {
 	if (!screenName || screenName === "undefined")
 		return res.status(400).send({ msg: "Error occurred extracting twid" });
 	const user = await User.findOne({
-		screen_name: screenName,
+		screen_name: {
+			$regex: new RegExp(screenName, "i"),
+		},
 	});
 	if (!user) return res.status(200).send({ data: {} });
 	return res.status(200).send({
@@ -137,7 +139,9 @@ router.get("/GazOglcBvgLigl3ywt6b3Q/UserByRestId", async (req, res) => {
 	if (!id_string || id_string === "undefined")
 		return res.status(400).send({ msg: "Error occurred extracting twid" });
 	const user = await User.findOne({
-		id_string,
+		id_string: {
+			$regex: new RegExp(id_string, "i"),
+		},
 	});
 	if (!user) return res.status(200).send({ data: {} });
 	return res.status(200).send({
