@@ -17,10 +17,10 @@ import { randInt } from "../../util/randUtil";
 const router = express.Router();
 
 interface IUserMention {
-	id_str: string;
-	name: string;
-	screen_name: string;
-	indices: [number, number];
+	id_str?: string;
+	name?: string;
+	screen_name?: string;
+	indices?: [number?, number?];
 }
 
 // router.get("/P7qs2Sf7vu1LDKbzDW9FSA/UserMedia", async (req, res) => {
@@ -244,20 +244,24 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 	).id as number;
 	const user = await User.findOne({ id });
 	if (!user) return res.status(400).send({ msg: "User not found" });
-	const tags = [] as IUserMention[];
+	const user_mentions = [] as IUserMention[];
 	const matches = body.variables.tweet_text.matchAll(/@(\S+)/gm);
 	for (const match of matches) {
 		const withTag = match[0];
 		const withoutTag = match[1];
+		console.log(withTag, withoutTag)
 		const user = await User.findOne({ screen_name: withoutTag });
-		if (!user) break;
-		tags.push({
-			id_str: user.id_string,
-			name: user.name,
-			screen_name: user.screen_name,
-			indices: [],
+		user_mentions.push({
+			id_str: user?.id_string,
+			name: user?.name,
+			screen_name: user?.screen_name,
+			indices: [
+				match.index,
+				withTag.length + (match.index || 0)
+			],
 		});
 	}
+	console.log(user_mentions)
 	const tweetId = randInt(12);
 	const tweetData = {
 		edit_perspective: {
@@ -270,12 +274,12 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 			bookmarked: false,
 			conversation_id_str: tweetId.toString(),
 			created_at: formatDate(new Date()),
-			display_text_range: [0, 88],
+			display_text_range: [0, body.variables.tweet_text.length],
 			entities: {
 				hashtags: [],
 				symbols: [],
 				urls: [],
-				user_mentions: [],
+				user_mentions
 			},
 			favorite_count: 0,
 			favorited: false,
@@ -308,7 +312,7 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 			hashtags: tweetData.legacy.entities.hashtags,
 			symbols: tweetData.legacy.entities.symbols,
 			urls: tweetData.legacy.entities.urls,
-			user_mentions: tweetData.legacy.entities.user_mentions,
+			user_mentions: [] as Array<IUserMention>,
 		},
 		favorite_count: tweetData.legacy.favorite_count,
 		favorited: tweetData.legacy.favorited,
@@ -322,6 +326,7 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 		retweeted: tweetData.legacy.retweeted,
 		user_id_str: tweetData.legacy.user_id_str,
 	});
+	user_mentions.forEach(mention => (tweet.entities!.user_mentions! as Array<IUserMention>).push(mention))
 	await tweet.save();
 	user.posted_tweet_ids.push(tweetId.toString());
 	await user.save();
@@ -442,7 +447,7 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 								hashtags: [],
 								symbols: [],
 								urls: [],
-								user_mentions: [],
+								user_mentions,
 							},
 							favorite_count: 0,
 							favorited: false,
