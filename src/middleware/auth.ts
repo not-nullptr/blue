@@ -3,11 +3,7 @@ import { verify } from "jsonwebtoken";
 import User from "../models/User";
 import { IJwtDecoded } from "../types/graphql";
 
-export async function requireAuth(
-	req: Request,
-	res: Response,
-	next: NextFunction
-): Promise<any> {
+export async function requireAuth(req: Request, res: Response): Promise<any> {
 	if (!req.cookies["jwt"])
 		return res
 			.status(401)
@@ -25,5 +21,4 @@ export async function requireAuth(
 	} catch (e) {
 		return res.status(401).send({ msg: "Failed to verify your JWT." });
 	}
-	next();
 }

@@ -4,6 +4,8 @@ import { requireAuth } from "../../middleware/auth";
 import Tweet from "../../models/Tweet";
 import User from "../../models/User";
 import { IGenericFeatures, IJwtDecoded } from "../../types/graphql";
+import { IUser } from "../../types/guide";
+import { IUserMention } from "./userUtils";
 
 interface IUserTweetsVariables {
 	userId: string;
@@ -18,9 +20,7 @@ interface IFavouriteTweetVariables {
 	tweet_id: string;
 }
 
-const router = express.Router();
-
-router.get("/CdG2Vuc1v6F5JyEngGpxVw/UserTweets", async (req, res) => {
+export async function UserTweets(req: express.Request, res: express.Response) {
 	const loggedInUser = req.cookies["jwt"]
 		? await User.findOne({
 				id_string: (
@@ -150,9 +150,14 @@ router.get("/CdG2Vuc1v6F5JyEngGpxVw/UserTweets", async (req, res) => {
 			},
 		},
 	});
-});
+}
 
-router.use("/7JUXeanO9cYvjKvaPe7EMg/HomeTimeline", async (req, res) => {
+export async function HomeTimeline(
+	req: express.Request,
+	res: express.Response
+) {
+	const unauthorized = await requireAuth(req, res);
+	if (unauthorized) return;
 	const userId = req.cookies["jwt"]
 		? ((verify(req.cookies["jwt"], process.env.JWT_SECRET!) as IJwtDecoded)
 				.id as number)
@@ -209,6 +214,16 @@ router.use("/7JUXeanO9cYvjKvaPe7EMg/HomeTimeline", async (req, res) => {
 																		tweet.user.ext_is_blue_verified,
 																	legacy: {
 																		...(tweet.user as any)._doc,
+																		entities: {
+																			user_mentions: (
+																				tweet.legacy.entities
+																					?.user_mentions as IUserMention[]
+																			).map((mention) => {
+																				return {
+																					a: true,
+																				};
+																			}),
+																		},
 																	},
 																	profile_image_shape:
 																		tweet.user.ext_profile_image_shape,
@@ -260,11 +275,14 @@ router.use("/7JUXeanO9cYvjKvaPe7EMg/HomeTimeline", async (req, res) => {
 			},
 		},
 	});
-});
+}
 
-router.use("/7JUXeanO9cYvjKvaPe7EMg/HomeTimeline", requireAuth);
-
-router.post("/lI07N6Otwv1PhnEgXILM7A/FavoriteTweet", async (req, res) => {
+export async function FavoriteTweet(
+	req: express.Request,
+	res: express.Response
+) {
+	const unauthorized = await requireAuth(req, res);
+	if (unauthorized) return;
 	const user = await User.findOne({
 		id_string: (
 			verify(req.cookies["jwt"], process.env.JWT_SECRET!) as IJwtDecoded
@@ -283,11 +301,14 @@ router.post("/lI07N6Otwv1PhnEgXILM7A/FavoriteTweet", async (req, res) => {
 		return res.status(400).send({ data: { favourte_tweet: "NOT DONE" } });
 	}
 	return res.status(200).send({ data: { favorite_tweet: "Done" } });
-});
+}
 
-router.use("/lI07N6Otwv1PhnEgXILM7A/FavoriteTweet", requireAuth);
-
-router.post("/ZYKSe-w7KEslx3JhSIk5LA/UnfavoriteTweet", async (req, res) => {
+export async function UnfavoriteTweet(
+	req: express.Request,
+	res: express.Response
+) {
+	const unauthorized = await requireAuth(req, res);
+	if (unauthorized) return;
 	const user = await User.findOne({
 		id_string: (
 			verify(req.cookies["jwt"], process.env.JWT_SECRET!) as IJwtDecoded
@@ -308,6 +329,4 @@ router.post("/ZYKSe-w7KEslx3JhSIk5LA/UnfavoriteTweet", async (req, res) => {
 		return res.status(400).send({ data: { unfavorite_tweet: "NOT DONE" } });
 	}
 	return res.status(200).send({ data: { unfavorite_tweet: "Done" } });
-});
-
-export default router;
+}

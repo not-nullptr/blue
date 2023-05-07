@@ -1,8 +1,9 @@
 import express from "express";
 
-const router = express.Router();
-
-router.get("/B7I5HPN6jm5Mgv9N8fgFPg/TwitterBlueSignUpV2Query", (req, res) => {
+export function TwitterBlueSignUpV2Query(
+	req: express.Request,
+	res: express.Response
+) {
 	return res.status(200).send({
 		data: {
 			blue_marketing_page_config: {
@@ -175,10 +176,11 @@ router.get("/B7I5HPN6jm5Mgv9N8fgFPg/TwitterBlueSignUpV2Query", (req, res) => {
 			},
 		},
 	});
-});
+}
 
-router.get("/BAMss4qXZvxtUJdCn__AnA/useRelayDelegateDataQuery", (req, res) => {
+export function useRelayDelegateDataQuery(
+	req: express.Request,
+	res: express.Response
+) {
 	return res.status(200).send({ data: { viewer: {} } });
-});
-
-export default router;
+}

@@ -12,11 +12,10 @@ import {
 	ICreateTweetBody,
 } from "../../types/graphql";
 import { formatDate } from "../../util/formatDate";
+import { log } from "../../util/logging";
 import { randInt } from "../../util/randUtil";
 
-const router = express.Router();
-
-interface IUserMention {
+export interface IUserMention {
 	id_str?: string;
 	name?: string;
 	screen_name?: string;
@@ -70,7 +69,10 @@ interface IUserMention {
 // 	});
 // });
 
-router.get("/sLVLhk0bGj3MVFEKTdax1w/UserByScreenName", async (req, res) => {
+export async function UserByScreenName(
+	req: express.Request,
+	res: express.Response
+) {
 	const features = JSON.parse(
 		req.query.features!.toString()
 	) as IGenericFeatures;
@@ -131,9 +133,12 @@ router.get("/sLVLhk0bGj3MVFEKTdax1w/UserByScreenName", async (req, res) => {
 			},
 		},
 	});
-});
+}
 
-router.get("/GazOglcBvgLigl3ywt6b3Q/UserByRestId", async (req, res) => {
+export async function UserByRestId(
+	req: express.Request,
+	res: express.Response
+) {
 	const features = JSON.parse(
 		req.query.features!.toString()
 	) as IGenericFeatures;
@@ -193,51 +198,53 @@ router.get("/GazOglcBvgLigl3ywt6b3Q/UserByRestId", async (req, res) => {
 			},
 		},
 	});
-});
+}
 
-router.get(
-	"/9zwVLJ48lmVUk8u_Gh9DmA/ProfileSpotlightsQuery",
-	async (req, res) => {
-		const variables = JSON.parse(
-			req.query.variables!.toString()
-		) as IProfileSpotlightsQueryVariables;
-		if (!variables) return res.status(400).send({ msg: "Missing parameters" });
-		const screenName = variables.screen_name;
-		if (!screenName || screenName === "undefined")
-			return res.status(400).send({ msg: "Error occurred extracting twid" });
-		const user = await User.findOne({
-			screen_name: screenName,
-		});
-		if (!user) return res.status(400).send({ msg: "User not found" });
-		// if (user.id !== jwtParams.id)
-		// 	return res.status(401).send({ msg: "Unauthorized" });
-		return res.status(200).send({
-			data: {
-				user_result_by_screen_name: {
-					result: {
-						__typename: "User",
-						id: user._id,
-						legacy: {
-							blocked_by: false,
-							blocking: false,
-							followed_by: false,
-							following: false,
-							name: user.name,
-							protected: false,
-							screen_name: user.screen_name,
-						},
-						profilemodules: {
-							v1: [],
-						},
-						rest_id: user._id,
+export async function ProfileSpotlightsQuery(
+	req: express.Request,
+	res: express.Response
+) {
+	const variables = JSON.parse(
+		req.query.variables!.toString()
+	) as IProfileSpotlightsQueryVariables;
+	if (!variables) return res.status(400).send({ msg: "Missing parameters" });
+	const screenName = variables.screen_name;
+	if (!screenName || screenName === "undefined")
+		return res.status(400).send({ msg: "Error occurred extracting twid" });
+	const user = await User.findOne({
+		screen_name: screenName,
+	});
+	if (!user) return res.status(400).send({ msg: "User not found" });
+	// if (user.id !== jwtParams.id)
+	// 	return res.status(401).send({ msg: "Unauthorized" });
+	return res.status(200).send({
+		data: {
+			user_result_by_screen_name: {
+				result: {
+					__typename: "User",
+					id: user._id,
+					legacy: {
+						blocked_by: false,
+						blocking: false,
+						followed_by: false,
+						following: false,
+						name: user.name,
+						protected: false,
+						screen_name: user.screen_name,
 					},
+					profilemodules: {
+						v1: [],
+					},
+					rest_id: user._id,
 				},
 			},
-		});
-	}
-);
+		},
+	});
+}
 
-router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
+export async function CreateTweet(req: express.Request, res: express.Response) {
+	const unauthorized = await requireAuth(req, res);
+	if (unauthorized) return;
 	const body = req.body as ICreateTweetBody;
 	const id = (
 		verify(req.cookies["jwt"], process.env.JWT_SECRET!) as IJwtDecoded
@@ -249,19 +256,16 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 	for (const match of matches) {
 		const withTag = match[0];
 		const withoutTag = match[1];
-		console.log(withTag, withoutTag)
+		log(withTag, withoutTag);
 		const user = await User.findOne({ screen_name: withoutTag });
 		user_mentions.push({
 			id_str: user?.id_string,
 			name: user?.name,
 			screen_name: user?.screen_name,
-			indices: [
-				match.index,
-				withTag.length + (match.index || 0)
-			],
+			indices: [match.index, withTag.length + (match.index || 0)],
 		});
 	}
-	console.log(user_mentions)
+	log(user_mentions);
 	const tweetId = randInt(12);
 	const tweetData = {
 		edit_perspective: {
@@ -279,7 +283,7 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 				hashtags: [],
 				symbols: [],
 				urls: [],
-				user_mentions
+				user_mentions,
 			},
 			favorite_count: 0,
 			favorited: false,
@@ -312,7 +316,7 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 			hashtags: tweetData.legacy.entities.hashtags,
 			symbols: tweetData.legacy.entities.symbols,
 			urls: tweetData.legacy.entities.urls,
-			user_mentions: [] as Array<IUserMention>,
+			user_mentions,
 		},
 		favorite_count: tweetData.legacy.favorite_count,
 		favorited: tweetData.legacy.favorited,
@@ -326,7 +330,6 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 		retweeted: tweetData.legacy.retweeted,
 		user_id_str: tweetData.legacy.user_id_str,
 	});
-	user_mentions.forEach(mention => (tweet.entities!.user_mentions! as Array<IUserMention>).push(mention))
 	await tweet.save();
 	user.posted_tweet_ids.push(tweetId.toString());
 	await user.save();
@@ -447,7 +450,9 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 								hashtags: [],
 								symbols: [],
 								urls: [],
-								user_mentions,
+								user_mentions: (
+									tweet.entities!.user_mentions as Array<Array<IUserMention>>
+								).map((mention) => mention[0]),
 							},
 							favorite_count: 0,
 							favorited: false,
@@ -474,11 +479,12 @@ router.post("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", async (req, res) => {
 			},
 		},
 	});
-});
+}
 
-router.use("/1RyAhNwby-gzGCRVsMxKbQ/CreateTweet", requireAuth);
-
-router.get("/QjN8ZdavFDqxUjNn3r9cig/AuthenticatedUserTFLists", (req, res) => {
+export async function AuthenticatedUserTFLists(
+	req: express.Request,
+	res: express.Response
+) {
 	return res.status(200).send({
 		data: {
 			authenticated_user_trusted_friends_lists: [
@@ -491,6 +497,4 @@ router.get("/QjN8ZdavFDqxUjNn3r9cig/AuthenticatedUserTFLists", (req, res) => {
 			],
 		},
 	});
-});
-
-export default router;
+}

@@ -8,8 +8,9 @@ import https from "https";
 import cors from "cors";
 import mongoose from "mongoose";
 import * as mockttp from "mockttp";
-import cookieParser = require("cookie-parser");
+import cookieParser from "cookie-parser";
 import type { ErrorRequestHandler } from "express";
+import { log } from "./util/logging";
 
 dotenv.config();
 
@@ -38,16 +39,15 @@ async function mountRoute(routePath: string, root: string) {
 
 app.use((req, res, next) => {
 	if (req.path.includes("error_log.json")) next();
-	console.log(
-		`${req.path} | ${req.cookies.jwt ? `Logged in?` : `Logged out?`}`
-	);
+	// log(
+	// 	`${req.path} | ${req.cookies.jwt ? `Logged in?` : `Logged out?`}`
+	// );
 	next();
 });
 
 const routes11 = searchDirForTsFiles("src/routes/1.1");
 const routes11Prefixed = searchDirForTsFiles("src/routes/1.1-prefixed");
 const routes2 = searchDirForTsFiles("src/routes/2");
-const routesGraphQL = searchDirForTsFiles("src/routes/gql");
 const routesOther = searchDirForTsFiles("src/routes/other");
 const twimg = searchDirForTsFiles("src/routes/twimg");
 
@@ -63,9 +63,7 @@ routes2.forEach(async (routePath) => {
 	await mountRoute(routePath, "/i/api/2");
 });
 
-routesGraphQL.forEach(async (routePath) => {
-	await mountRoute(routePath, "/i/api/graphql");
-});
+mountRoute("src/routes/gql/graphQlHandler.ts", "/i/api/graphql");
 
 routesOther.forEach(async (routePath) => {
 	await mountRoute(routePath, "/");
@@ -76,7 +74,7 @@ twimg.forEach(async (routePath) => {
 });
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-	console.log(err.stack);
+	log(err.stack);
 	return res.status(500).send({
 		msg:
 			"An error occured within the server. Open an issue with the information below on the GitHub, including what you did leading up to this error.\n" +
@@ -94,7 +92,7 @@ const options = {
 const httpsServer = https.createServer(options, app);
 
 httpsServer.listen(process.env.PORT, () => {
-	console.log(`Blue is listening on port ${process.env.PORT}.`);
+	log(`Blue is listening on port ${process.env.PORT}.`);
 });
 
 (async () => {
@@ -152,5 +150,5 @@ httpsServer.listen(process.env.PORT, () => {
 		.thenForwardTo("https://localhost", { ignoreHostHttpsErrors: true });
 	server.forUnmatchedRequest().thenPassThrough();
 	await server.start();
-	console.log(`Blue proxy is listening on port ${server.port}.`);
+	log(`Blue proxy is listening on port ${server.port}.`);
 })();

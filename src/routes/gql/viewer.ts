@@ -1,9 +1,7 @@
 import express from "express";
 import User from "../../models/User";
 
-const router = express.Router();
-
-router.use("/XeaGEEWXp54Km4mVNvcMmg/Viewer", async (req, res) => {
+export async function Viewer(req: express.Request, res: express.Response) {
 	if (!req.cookies.twt_id)
 		return res.status(400).send({ msg: "No twid detected" });
 	const id = (req.cookies.twt_id as string).split("=")[1] as string;
@@ -132,6 +130,4 @@ router.use("/XeaGEEWXp54Km4mVNvcMmg/Viewer", async (req, res) => {
 			},
 		},
 	});
-});
-
-export default router;
+}
