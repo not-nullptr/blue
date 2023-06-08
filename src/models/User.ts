@@ -12,9 +12,11 @@ const user = new mongoose.Schema({
 	},
 	email: {
 		type: "String",
+		select: false,
 	},
 	password: {
 		type: "String",
+		select: false,
 	},
 	screen_name: {
 		type: "String",
@@ -166,9 +168,6 @@ const user = new mongoose.Schema({
 	follow_request_sent: {
 		type: "Mixed",
 	},
-	notifications: {
-		type: "Mixed",
-	},
 	muting: {
 		type: "Mixed",
 	},
@@ -231,6 +230,12 @@ const user = new mongoose.Schema({
 	require_some_consent: {
 		type: "Boolean",
 	},
+	// custom vars because i don't like
+	// how twitter handles them, or be-
+	// -cause i can't figure it out lol
+	conversations: [String],
+	notification_ids: [String],
+	notification_sort_index: String,
 });
 
 const User = mongoose.model("User", user);

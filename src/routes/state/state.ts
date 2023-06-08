@@ -91,6 +91,32 @@ router.get("*", async (req, res) => {
 			users: {
 				entities: {
 					[user.id_string!]: {
+						...user,
+						hasNftAvatar: {
+							r: {
+								ok: false,
+							},
+							ttl: -1,
+						},
+						highlightedLabel: {
+							r: {
+								ok: {
+									label: {
+										description: "Twitter",
+										badge: {
+											url: "https://pbs.twimg.com/profile_images/1488548719062654976/u6qfBBkF_bigger.jpg",
+										},
+										url: {
+											urlType: "DeepLink",
+											url: "https://twitter.com/Twitter",
+										},
+										userLabelType: "BusinessLabel",
+										userLabelDisplayType: "Badge",
+									},
+								},
+							},
+							ttl: -1,
+						},
 						can_dm: user.can_dm || true,
 						can_media_tag: false || false,
 						default_profile: user.default_profile || true,
@@ -4675,9 +4701,6 @@ router.get("*", async (req, res) => {
 			},
 		},
 	};
-	console.log({
-		[user.id_string!]: user,
-	});
 	const html = fs.readFileSync(`${getRootPathSync()}/src/static/twitter.html`);
 	const dom = new JSDOM(html);
 	dom.window.document.getElementById(

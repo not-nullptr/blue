@@ -12,7 +12,8 @@ import { IUser } from "../../types/guide";
 import { formatDate } from "../../util/formatDate";
 import { log } from "../../util/logging";
 import { randInt } from "../../util/randUtil";
-import { IUserMention } from "./userUtils";
+import { IUserMention } from "./user";
+import { addNotification } from "../../util/notifications";
 
 interface IUserTweetsVariables {
 	userId: string;
@@ -429,6 +430,7 @@ export async function CreateTweet(req: express.Request, res: express.Response) {
 	await user.save();
 	log(`${user.name} (@${user.screen_name}) just posted a tweet:`);
 	log(`"${tweet.full_text}"`);
+	addNotification("You just posted a tweet!", "internal", user.id_string!);
 	return res.status(200).send({
 		// data: {
 		// 	create_tweet: {

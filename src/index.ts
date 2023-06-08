@@ -107,7 +107,6 @@ httpsServer.listen(process.env.PORT, () => {
 		.forAnyRequest()
 		.forHostname("twitter.com")
 		.matching((req) => {
-			console.log(req.path, req.path !== "/" && !req.headers["Sec-Fetch-Dest"]);
 			return req.path !== "/" && !req.headers["Sec-Fetch-Dest"];
 		})
 		.thenForwardTo("https://localhost", {
