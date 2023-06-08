@@ -11,6 +11,7 @@ import * as mockttp from "mockttp";
 import cookieParser from "cookie-parser";
 import type { ErrorRequestHandler } from "express";
 import { log } from "./util/logging";
+import { CallbackResponseMessageResult } from "mockttp/dist/rules/requests/request-handler-definitions";
 
 dotenv.config();
 
@@ -31,7 +32,6 @@ app.use(
 );
 
 async function mountRoute(routePath: string, root: string) {
-	//
 	const router = ((await import(routePath.replace("src/", "./"))) as IRouteFile)
 		.default;
 	app.use(root, router);
@@ -96,12 +96,19 @@ httpsServer.listen(process.env.PORT, () => {
 });
 
 (async () => {
+	app.use("/", ((await import("./routes/state/state")) as IRouteFile).default);
 	const server = mockttp.getLocal({
 		https: {
 			keyPath: "certs/testCA.key",
 			certPath: "certs/testCA.pem",
 		},
 	});
+	server
+		.forAnyRequest()
+		.forHostname("twitter.com")
+		.thenForwardTo("https://localhost", {
+			ignoreHostHttpsErrors: true,
+		});
 	server
 		.forAnyRequest()
 		.forHostname("twitter.com")
