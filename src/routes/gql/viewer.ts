@@ -2,11 +2,103 @@ import express from "express";
 import User from "../../models/User";
 
 export async function Viewer(req: express.Request, res: express.Response) {
-	if (!req.cookies.twt_id)
-		return res.status(400).send({ msg: "No twid detected" });
-	const id = (req.cookies.twt_id as string).split("=")[1] as string;
+	// if (!req.cookies.twt_id)
+	// 	return res.status(400).send({ msg: "No twid detected" });
+	const id = (req.cookies.twt_id as string | undefined)?.split("=")[1] as
+		| string
+		| undefined;
 	if (!id || id === "undefined")
-		return res.status(400).send({ msg: "Error occurred extracting twid" });
+		return res.status(200).send({
+			errors: [
+				{
+					message: "Authentication: Not authenticated",
+					locations: [{ line: 11, column: 5 }],
+					path: ["viewer", "user_results"],
+					extensions: {
+						name: "AuthenticationError",
+						source: "Client",
+						retry_after: 0,
+						code: 32,
+						kind: "Permissions",
+						tracing: { trace_id: "79b1d650b7edea88" },
+					},
+					code: 32,
+					kind: "Permissions",
+					name: "AuthenticationError",
+					source: "Client",
+					retry_after: 0,
+					tracing: { trace_id: "79b1d650b7edea88" },
+				},
+				{
+					message:
+						"Authorization: Denied by access control: unspecified reason",
+					locations: [{ line: 24, column: 5 }],
+					path: ["viewer", "educationFlags"],
+					extensions: {
+						name: "AuthorizationError",
+						source: "Client",
+						code: 37,
+						kind: "Permissions",
+						tracing: { trace_id: "79b1d650b7edea88" },
+					},
+					code: 37,
+					kind: "Permissions",
+					name: "AuthorizationError",
+					source: "Client",
+					tracing: { trace_id: "79b1d650b7edea88" },
+				},
+				{
+					message:
+						"Authorization: Denied by access control: unspecified reason",
+					locations: [{ line: 29, column: 5 }],
+					path: ["viewer", "is_active_creator"],
+					extensions: {
+						name: "AuthorizationError",
+						source: "Client",
+						code: 37,
+						kind: "Permissions",
+						tracing: { trace_id: "79b1d650b7edea88" },
+					},
+					code: 37,
+					kind: "Permissions",
+					name: "AuthorizationError",
+					source: "Client",
+					tracing: { trace_id: "79b1d650b7edea88" },
+				},
+				{
+					message:
+						"Authorization: Denied by access control: unspecified reason",
+					locations: [{ line: 30, column: 5 }],
+					path: ["viewer", "super_followers_count"],
+					extensions: {
+						name: "AuthorizationError",
+						source: "Client",
+						code: 37,
+						kind: "Permissions",
+						tracing: { trace_id: "79b1d650b7edea88" },
+					},
+					code: 37,
+					kind: "Permissions",
+					name: "AuthorizationError",
+					source: "Client",
+					tracing: { trace_id: "79b1d650b7edea88" },
+				},
+			],
+			data: {
+				viewer: {
+					has_community_memberships: false,
+					create_community_action_result: {
+						__typename: "CommunityCreateActionUnavailable",
+						reason: "Unavailable",
+						message: "Action is not available",
+					},
+					user_features: [
+						{ feature: "mediatool_studio_library", enabled: false },
+					],
+					is_tfe_restricted_session: false,
+				},
+			},
+		});
 	const user = await User.findOne({
 		id,
 	});
