@@ -308,6 +308,13 @@ export async function FavoriteTweet(
 	} else {
 		return res.status(400).send({ data: { favourte_tweet: "NOT DONE" } });
 	}
+	addNotification(
+		"%1 liked your Tweet",
+		"like",
+		tweet.user_id_str!,
+		user.id_string!,
+		tweet.id_str!
+	);
 	return res.status(200).send({ data: { favorite_tweet: "Done" } });
 }
 
@@ -430,7 +437,13 @@ export async function CreateTweet(req: express.Request, res: express.Response) {
 	await user.save();
 	log(`${user.name} (@${user.screen_name}) just posted a tweet:`);
 	log(`"${tweet.full_text}"`);
-	addNotification("You just posted a tweet!", "internal", user.id_string!);
+	// addNotification(
+	// 	"%1 just posted a tweet!",
+	// 	"reply",
+	// 	user.id_string!,
+	// 	user.id_string!,
+	// 	tweet.id_str!
+	// );
 	return res.status(200).send({
 		// data: {
 		// 	create_tweet: {

@@ -9,6 +9,7 @@
 	"author": "madzzz",
 	"license": "ISC",
 	"dependencies": {
+		"@typegoose/typegoose": "^11.2.0",
 		"@types/bcrypt": "^5.0.0",
 		"@types/cookie-parser": "^1.4.3",
 		"@types/cors": "^2.8.13",
