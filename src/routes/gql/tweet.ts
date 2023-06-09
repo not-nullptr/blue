@@ -308,13 +308,14 @@ export async function FavoriteTweet(
 	} else {
 		return res.status(400).send({ data: { favourte_tweet: "NOT DONE" } });
 	}
-	addNotification(
-		"%1 liked your Tweet",
-		"like",
-		tweet.user_id_str!,
-		user.id_string!,
-		tweet.id_str!
-	);
+	if (tweet.user_id_str !== user.id_string)
+		addNotification(
+			"%1 liked your tweet!",
+			"like",
+			tweet.user_id_str!,
+			user.id_string!,
+			tweet.id_str!
+		);
 	return res.status(200).send({ data: { favorite_tweet: "Done" } });
 }
 
